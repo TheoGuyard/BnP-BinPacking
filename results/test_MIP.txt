@@ -1,0 +1,9 @@
+****** Problem ******
+Instance : test.txt
+Bin capacity : 1.0
+Number of items : 5
+Method : MIP
+****** Result ******
+Number of bin used : 2.0
+Bin 1 contains objects : 3 5 
+Bin 5 contains objects : 1 2 4 

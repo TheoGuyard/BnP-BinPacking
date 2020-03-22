@@ -6,8 +6,8 @@ include("bnp.jl")
 include("mip.jl")
 
 const GUROBI_ENV = Gurobi.Env()
-global data = read_data("CCNFP10g1a.txt")
+global data = read_data("test.txt")
 global ϵ = 0.00001
 
-result = solve_MIP()
-result = solve_BnP()
+#solve_BnP()
+solve_MIP()

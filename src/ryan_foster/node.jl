@@ -1,7 +1,7 @@
 include("master.jl")
-include("slave.jl")
+include("subproblem.jl")
 
-function process_node(nodeindex)
+function process_node_ryan_foster(nodeindex)
 
     println("\e[93m Processing node $nodeindex \e[00m")
     println("\e[96m Up-branch pairs are : $(tree[nodeindex].upbranch)")
@@ -25,7 +25,7 @@ function process_node(nodeindex)
 
         if maximum(solution - floor.(solution)) <= ϵ
             # Solution is feasible, upper-bound and best node are updated
-            println("\e[32m Feasible solution with value $value found \e[00m")
+            println("\e[35m Feasible solution with value $value found \e[00m")
             if value <= UB
                 global UB = value
                 global bestsol = calculate_sol(solution,node_pool)
@@ -38,8 +38,8 @@ function process_node(nodeindex)
             end
         end
 
-        # Solve slave problem
-        reduced_cost, column = solve_slave(π,nodeindex)
+        # Solve subproblem problem
+        reduced_cost, column = solve_subproblem(π,nodeindex)
 
         # Bound update
         nodeub = value
@@ -47,7 +47,7 @@ function process_node(nodeindex)
         if nodelb >= tree[nodeindex].lb tree[nodeindex].lb = nodelb end
 
         if reduced_cost < Inf
-            # Branching rules don't make the slave problem infeasible
+            # Branching rules don't make the subproblem problem infeasible
             pattern = findall(x -> x!=0, column)
             if reduced_cost < -ϵ
                 # Column is added to the master problem
@@ -63,7 +63,7 @@ function process_node(nodeindex)
                 println("\e[34m Pattern with items $pattern added \e[00m")
             end
         else
-            # Branching rules make the slave problem infeasible
+            # Branching rules make the subproblem problem infeasible
             node_infeasible = true
             println("\e[36m Branching rules made the node infeasible \e[00m")
             break

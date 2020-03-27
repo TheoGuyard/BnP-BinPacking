@@ -2,7 +2,7 @@ include("display.jl")
 
 function solve_MIP()
 
-    println("\e[95m********** Solve MIP ****************\e[00m")
+    println("\e[92m********** Solve MIP ****************\e[00m")
 
     model = Model(with_optimizer(Gurobi.Optimizer, GUROBI_ENV, OutputFlag=0))
 

@@ -1,10 +1,14 @@
 include("typedef.jl")
-include("node.jl")
+include("ryan_foster/node.jl")
 include("display.jl")
 
 function solve_BnP()
 
-    println("\e[95m********** Solve BnP ****************\e[00m")
+    if !check_settings()
+        return []
+    end
+
+    println("\e[92m*********** Solve BnP ****************\e[00m")
 
     # Each column corresponds to a pattern with the cost in 1st index
     global column_pool = Array{Array{Int,1},1}()
@@ -34,7 +38,7 @@ function solve_BnP()
         current = queue[end]
 
         # Patterns selected for the current node
-        nodesol = process_node(current)
+        nodesol = process_node_ryan_foster(current)
 
         if (size(nodesol,1)!=0) && (tree[current].lb<=UB)
             (item1,item2) = calculate_branching(nodesol)
@@ -48,7 +52,11 @@ function solve_BnP()
                         vcat((item1,item2), tree[current].upbranch),
                         tree[current].downbranch))
                 push!(tree[current].children, length(tree))
-                push!(queue, length(tree))
+                if queueing_method == "LIFO"
+                    push!(queue, length(tree))
+                else
+                    pushfirst!(queue, length(tree))
+                end
                 # Down branch
                 push!(tree,
                     Node(current,
@@ -57,7 +65,11 @@ function solve_BnP()
                         tree[current].upbranch,
                         vcat((item1,item2), tree[current].downbranch)))
                 push!(tree[current].children, length(tree))
-                push!(queue, length(tree))
+                if queueing_method == "LIFO"
+                    push!(queue, length(tree))
+                else
+                    pushfirst!(queue, length(tree))
+                end
             else
                 println("\e[37mInterger solution with value $(tree[current].lb) found\e[00m")
             end
@@ -109,4 +121,48 @@ function calculate_branching(node_sol)
         found && break
     end
     return (item1,item2)
+end
+
+function check_settings()
+
+    errors = []
+
+    if !(branching_rule in ["ryan_foster", "generic"])
+        push!(errors,"< branching_rule > parameter should either be 'ryan_foster' or 'generic'")
+    end
+
+    if !(subproblem_method in ["gurobi", "dynamic"])
+        push!(errors,"< subproblem_method > parameter should either be 'gurobi' or 'dynamic'")
+    end
+
+    if !(root_heuristic in [true, false])
+        push!(errors,"< root_heuristic > parameter should either be true or fasle")
+    end
+
+    if !(tree_heuristic in [true, false])
+        push!(errors,"< tree_heuristic > parameter should either be true or fasle")
+    end
+
+    if !(queueing_method in ["FIFO", "LIFO"])
+        push!(errors,"< queueing_method > parameter should either be 'FIFO' or 'LIFO'")
+    end
+
+    if !(verbose_level in [1,2,3])
+        push!(errors,"< verbose_level > parameter should either be 1, 2 or 3")
+    end
+
+    if !((ϵ > 10^(-16)) && (ϵ < 10^(-4)))
+        push!(errors,"< ϵ > parameter should be between 10^(-16) and 10^(-4)")
+    end
+
+    if length(errors)>0
+        println("\e[91m*************** Error ****************\e[00m")
+        for error in errors
+            println(error)
+        end
+        println("More informations about the parameters in the README.md file.")
+        return false
+    end
+    return true
+
 end

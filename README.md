@@ -34,7 +34,7 @@ The following parameters are set in `main.jl`. More details are given in the **[
 * `tree_heuristic` : `true` or `false`
 * `queueing_method` : `"FIFO"` or `"LIFO"`
 * `verbose_level` : `1`, `2` or `3`
-* `ϵ` : Between $10^{-16}$ and $10^{-4}$
+* `ϵ` : Between `10e(-16)` and `10e(-4)`
 
 ## Datasets
 

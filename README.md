@@ -10,17 +10,18 @@
 ## Usage
 
 1. Clone the repository
-   
+```
     git clone git://github.com/TheoGuyard/BnP-BinPacking.git
-
+```
 2. Open `Julia` or an IDE at project root (directory containing `README.md`)
 3. Intall dependencies
-   
+```
     (@v1.4) pkg> add JuMP, Gurobi, DelimitedFiles
+```
 4. Make sure that [Gurobi environement variable](https://github.com/JuliaOpt/Gurobi.jl) is set
-
+```
     julia> ENV["GUROBI_HOME"] = "/path/to/gurobi/lib"
-
+```
 5. Set the parameters and run the code in `main.jl`
 
 ## Settings

@@ -1,0 +1,63 @@
+% ------------------------ %
+% 			Shortcuts			 %
+% ------------------------ %
+
+% Theorems
+\newtheorem{definition}{Definition}
+\newtheorem{remark}{Remark}
+\newtheorem{proposition}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{theorem}{Theorem}
+\newtheorem{corollary}{Corollary}
+\newtheorem{example}{Example}
+\newtheorem{problem}{Problem}
+
+% Numbering type
+\numberwithin{definition}{subsection}
+\numberwithin{remark}{subsection}
+\numberwithin{proposition}{subsection}
+\numberwithin{lemma}{subsection}
+\numberwithin{theorem}{subsection}
+\numberwithin{corollary}{subsection}
+\numberwithin{example}{subsection}
+\numberwithin{problem}{subsection}
+\numberwithin{equation}{subsection}
+
+% Proof QED symbol
+\renewcommand{\qedsymbol}{$\blacksquare$}
+
+% Lowercase styles
+\foreach \x in {a,...,z}{%
+	\expandafter\xdef\csname \x\endcsname{\noexpand\ensuremath{\noexpand\mathbf{\x}}}
+}
+\foreach \x in {a,...,z}{%
+	\expandafter\xdef\csname \x rm\endcsname{\noexpand\ensuremath{\noexpand\mathrm{\x}}}
+}
+
+% Uppercase styles
+\foreach \x in {A,...,Z}{%
+	\expandafter\xdef\csname \x\endcsname{\noexpand\ensuremath{\noexpand\mathbf{\x}}}
+}
+\foreach \x in {A,...,Z}{%
+	\expandafter\xdef\csname \x rm\endcsname{\noexpand\ensuremath{\noexpand\mathrm{\x}}}
+}
+\foreach \x in {A,...,Z}{%
+	\expandafter\xdef\csname \x bb\endcsname{\noexpand\ensuremath{\noexpand\mathbb{\x}}}
+}
+\foreach \x in {A,...,Z}{%
+	\expandafter\xdef\csname \x c\endcsname{\noexpand\ensuremath{\noexpand\mathcal{\x}}}
+}
+
+% Figures styles
+\def\0{{\mathbf 0}}
+\def\1{{\mathbf 1}}
+
+% Miscellaneous
+\def\ie{\textit{i.e.},\xspace}
+\def\eg{\textit{e.g.},\xspace}
+\def\etal{\textit{et al.}\xspace}
+
+% Macros d'editions
+\def\addNote#1{{\noindent\color{blue}{[NOTE : #1]}}}
+\def\toDo#1{{\noindent\color{red}{[TODO : #1]}}}
+

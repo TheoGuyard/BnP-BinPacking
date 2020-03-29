@@ -1,11 +1,13 @@
 include("master.jl")
-include("subproblem.jl")
+include("subproblem_ryan_foster.jl")
 
 function process_node_ryan_foster(nodeindex)
 
-    println("\e[93m Processing node $nodeindex \e[00m")
-    println("\e[96m Up-branch pairs are : $(tree[nodeindex].upbranch)")
-    println(" Down-branch pairs are : $(tree[nodeindex].downbranch) \e[00m")
+    if verbose_level>=3
+        println("\e[93m Processing node $nodeindex \e[00m")
+        println("\e[96m Up-branch pairs are : $(tree[nodeindex].upbranch)")
+        println(" Down-branch pairs are : $(tree[nodeindex].downbranch) \e[00m")
+    end
 
     # Nodes to be deleted after the node treatment
     global nodestobedeleted = []
@@ -25,7 +27,7 @@ function process_node_ryan_foster(nodeindex)
 
         if maximum(solution - floor.(solution)) <= ϵ
             # Solution is feasible, upper-bound and best node are updated
-            println("\e[35m Feasible solution with value $value found \e[00m")
+            if verbose_level>=3 println("\e[35m Feasible solution with value $value found \e[00m") end
             if value <= UB
                 global UB = value
                 global bestsol = calculate_sol(solution,node_pool)
@@ -38,17 +40,13 @@ function process_node_ryan_foster(nodeindex)
             end
         end
 
-        # Solve subproblem problem
-        reduced_cost, column = solve_subproblem(π,nodeindex)
-
-        # Bound update
-        nodeub = value
-        nodelb = sum(π[i] for i in 1:data.N) + reduced_cost
-        if nodelb >= tree[nodeindex].lb tree[nodeindex].lb = nodelb end
+        reduced_cost, column = solve_subproblem_ryan_foster(π,nodeindex)
 
         if reduced_cost < Inf
-            # Branching rules don't make the subproblem problem infeasible
             pattern = findall(x -> x!=0, column)
+            nodeub = value
+            nodelb = sum(π) + reduced_cost
+            if nodelb >= tree[nodeindex].lb tree[nodeindex].lb = nodelb end
             if reduced_cost < -ϵ
                 # Column is added to the master problem
                 column_cost = 1
@@ -60,12 +58,12 @@ function process_node_ryan_foster(nodeindex)
                     set_normalized_coefficient(packed[i], alpha[end], column[i])
                 end
                 set_objective_function(master, objective_function(master) + column_cost*alpha[end])
-                println("\e[34m Pattern with items $pattern added \e[00m")
+                if verbose_level>=3 println("\e[34m Pattern with items $pattern added \e[00m") end
             end
         else
             # Branching rules make the subproblem problem infeasible
             node_infeasible = true
-            println("\e[36m Branching rules made the node infeasible \e[00m")
+            if verbose_level>=3 println("\e[36m Branching rules made the node infeasible \e[00m") end
             break
         end
 
@@ -74,12 +72,13 @@ function process_node_ryan_foster(nodeindex)
         if (2*abs((nodeub-tree[nodeindex].lb))/abs((nodeub+tree[nodeindex].lb))<ϵ) || (reduced_cost>=-ϵ)
             if solution[1] >= ϵ
                 # Artificial column is used in the solution
-                node_infeasible = true
-                println("\e[36m Artificial column used, node is infeasible \e[00m")
+                if verbose_level>=3 println("\e[36m Artificial column used, node is infeasible \e[00m") end
                 return []
             end
-            println("\e[36m Node relaxation is solved to optimality")
-            println(" Node upper bound is $nodeub, Node lower bound is $(tree[nodeindex].lb) \e[00m")
+            if verbose_level>=3
+                println("\e[36m Node relaxation is solved to optimality")
+                println(" Node upper bound is $nodeub, Node lower bound is $(tree[nodeindex].lb) \e[00m")
+            end
             return calculate_sol(solution, node_pool)
         end
         optimize!(master)
@@ -99,14 +98,14 @@ function calculate_columns(nodeindex)
                 break
             end
         end
-        add && break
-        for (i,j) in tree[nodeindex].downbranch
-            if column_pool[c][i+1] + column_pool[c][j+1] > 1
-                add = false
-                break
+        if add
+            for (i,j) in tree[nodeindex].downbranch
+                if column_pool[c][i+1] + column_pool[c][j+1] > 1
+                    add = false
+                    break
+                end
             end
         end
-        add && break
         if add
             push!(node_pool,column_pool[c])
         end

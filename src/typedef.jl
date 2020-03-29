@@ -15,3 +15,8 @@ mutable struct Node
   upbranch::Array{Tuple}        # Couple of items for up-branch rules
   downbranch::Array{Tuple}      # Couple of items for down-branch rules
 end
+
+mutable struct Branching_Scheme
+  setzero::Vector{Int}
+  setone::Vector{Int}
+end

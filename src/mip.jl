@@ -18,7 +18,7 @@ function solve_MIP()
 
     @objective(model, Min, sum(u[b] for b in 1:data.B))
 
-    println("Solving problem ...")
+    println("\e[37mSolving problem ... \e[00m")
     optimize!(model)
 
     obj = JuMP.objective_value(model)

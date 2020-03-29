@@ -3,25 +3,32 @@ Instance : Falkenauer_t60_00.txt
 Bin capacity : 1000.0
 Number of items : 60
 Method : Branch-and-Price
+****** Settings ******
+Branching rule : generic
+Subproblem method : gurobi
+Heuristic at root : None
+Heuristic throughout tree : false
+Queueing method : FIFO
+Verbose level : 3
 ****** Result ******
 Number of bin used : 20.0
-Bin 1 contains objects : 3 39 59 
-Bin 2 contains objects : 12 33 36 
-Bin 3 contains objects : 14 26 55 
-Bin 4 contains objects : 11 28 52 
-Bin 5 contains objects : 10 30 50 
-Bin 6 contains objects : 19 20 46 
-Bin 7 contains objects : 6 34 57 
-Bin 8 contains objects : 4 48 53 
-Bin 9 contains objects : 1 56 60 
-Bin 10 contains objects : 24 25 32 
-Bin 11 contains objects : 16 22 42 
-Bin 12 contains objects : 7 38 45 
-Bin 13 contains objects : 8 37 47 
-Bin 14 contains objects : 15 23 43 
-Bin 15 contains objects : 5 44 51 
-Bin 16 contains objects : 2 41 58 
-Bin 17 contains objects : 17 18 49 
-Bin 18 contains objects : 13 29 40 
-Bin 19 contains objects : 21 27 35 
-Bin 20 contains objects : 9 31 54 
+Bin 1 contains objects : 3 39 58 
+Bin 2 contains objects : 6 33 57 
+Bin 3 contains objects : 17 20 46 
+Bin 4 contains objects : 12 34 36 
+Bin 5 contains objects : 7 38 45 
+Bin 6 contains objects : 16 22 43 
+Bin 7 contains objects : 24 26 32 
+Bin 8 contains objects : 15 23 42 
+Bin 9 contains objects : 14 25 55 
+Bin 10 contains objects : 11 28 52 
+Bin 11 contains objects : 10 30 50 
+Bin 12 contains objects : 21 27 35 
+Bin 13 contains objects : 4 47 53 
+Bin 14 contains objects : 1 56 60 
+Bin 15 contains objects : 9 31 54 
+Bin 16 contains objects : 18 19 49 
+Bin 17 contains objects : 5 44 51 
+Bin 18 contains objects : 8 37 48 
+Bin 19 contains objects : 13 29 40 
+Bin 20 contains objects : 2 41 59 

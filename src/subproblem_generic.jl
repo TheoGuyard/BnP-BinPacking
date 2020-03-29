@@ -1,4 +1,4 @@
-function solve_subproblem(π, node)
+function solve_subproblem_generic(s, π, node)
 
     subproblem = Model(with_optimizer(Gurobi.Optimizer, GUROBI_ENV, OutputFlag = 0))
 
@@ -10,13 +10,12 @@ function solve_subproblem(π, node)
         1 - sum(π[i] * y[i] for i in 1:data.N))
 
     # Branching constraints
-    for (i,j) in tree[node].upbranch
-        @constraint(subproblem, y[i] == y[j])
+    for i in branching_schemes[s].setzero
+        @constraint(subproblem, y[i] == 0)
     end
-    for (i,j) in tree[node].downbranch
-        @constraint(subproblem, y[i] + y[j] <= 1)
+    for i in branching_schemes[s].setone
+        @constraint(subproblem, y[i] == 1)
     end
-
     optimize!(subproblem)
 
     if JuMP.termination_status(subproblem) == MOI.OPTIMAL

@@ -1,0 +1,35 @@
+****** Problem ******
+Instance : Falkenauer_t60_00.txt
+Bin capacity : 1000.0
+Number of items : 60
+Method : MIP
+****** Settings ******
+Branching rule : ryan_foster
+Subproblem method : gurobi
+Heuristic at root : FFD
+Heuristic throughout tree : false
+Queueing method : LIFO
+Verbose level : 2
+****** Result ******
+Number of bin used : 21.0
+Bin 3 contains objects : 12 36 52 
+Bin 4 contains objects : 15 16 60 
+Bin 5 contains objects : 20 32 51 
+Bin 8 contains objects : 4 24 
+Bin 15 contains objects : 11 28 56 
+Bin 17 contains objects : 26 31 54 
+Bin 19 contains objects : 23 25 35 
+Bin 23 contains objects : 13 41 44 
+Bin 26 contains objects : 10 46 47 
+Bin 30 contains objects : 2 43 59 
+Bin 31 contains objects : 29 38 45 
+Bin 32 contains objects : 6 39 40 
+Bin 34 contains objects : 21 27 37 
+Bin 36 contains objects : 7 42 55 
+Bin 43 contains objects : 9 33 58 
+Bin 48 contains objects : 3 8 
+Bin 52 contains objects : 17 18 49 
+Bin 57 contains objects : 19 30 34 
+Bin 58 contains objects : 5 50 53 
+Bin 59 contains objects : 1 22 
+Bin 60 contains objects : 14 48 57 

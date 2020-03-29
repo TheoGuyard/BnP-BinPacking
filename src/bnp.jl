@@ -1,89 +1,67 @@
 include("typedef.jl")
-include("ryan_foster/node.jl")
+include("node_ryan_foster.jl")
+include("node_generic.jl")
 include("display.jl")
+include("heuristics.jl")
 
 function solve_BnP()
 
     if !check_settings()
-        return []
+        return nothing
     end
 
     println("\e[92m*********** Solve BnP ****************\e[00m")
 
-    # Each column corresponds to a pattern with the cost in 1st index
+    if verbose_level<=1 println("\e[37mTree is beeing explored ... \e[00m") end
+
     global column_pool = Array{Array{Int,1},1}()
-    # Artificial pattern with a high cost and with all the items in it
     push!(column_pool, vcat(data.N,ones(Int,data.N)))
-    # Artificial empty pattern with a 0 cost and no itemps in it
-    # push!(column_pool, zeros(Int,data.N+1))
 
     global UB = Inf
     global LB = -Inf
+    global bestsol
 
-    # The tree is a list of nodes
     global tree = Vector{Node}()
-    # Nodes to be processed are stored in a queue by their index in the tree vector
     global queue = Vector{Int}()
 
-    # Root of the tree
     push!(tree, Node(0,[],-Inf,[],[]))
     push!(queue, 1)
 
-    global bestsol
+    if verbose_level>=3 println("\e[37mRoot \e[00m") end
+    if root_heuristic != "None"
+        process_root_heuristic()
+    end
+    if verbose_level>=2 println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
 
-    # Process nodes while the tree isn't fully explored
     while length(queue) > 0
 
-        println("Queue : $queue")
+        if verbose_level>=3 println("\e[37mQueue : $queue\e[00m") end
         current = queue[end]
 
-        # Patterns selected for the current node
-        nodesol = process_node_ryan_foster(current)
+        if branching_rule == "ryan_foster"
+            nodesol = process_node_ryan_foster(current)
+        elseif branching_rule == "generic"
+            nodesol = process_node_generic(current)
+        end
 
         if (size(nodesol,1)!=0) && (tree[current].lb<=UB)
             (item1,item2) = calculate_branching(nodesol)
-            if (item1,item2)!=(0,0)
-                println("\e[35m Two new nodes are created branching on items $item1 and $item2\e[00m")
-                # Up branch
-                push!(tree,
-                    Node(current,
-                        [],
-                        tree[current].lb,
-                        vcat((item1,item2), tree[current].upbranch),
-                        tree[current].downbranch))
-                push!(tree[current].children, length(tree))
-                if queueing_method == "LIFO"
-                    push!(queue, length(tree))
-                else
-                    pushfirst!(queue, length(tree))
-                end
-                # Down branch
-                push!(tree,
-                    Node(current,
-                        [],
-                        tree[current].lb,
-                        tree[current].upbranch,
-                        vcat((item1,item2), tree[current].downbranch)))
-                push!(tree[current].children, length(tree))
-                if queueing_method == "LIFO"
-                    push!(queue, length(tree))
-                else
-                    pushfirst!(queue, length(tree))
-                end
+            if (item1,item2) != (0,0)
+                push_to_queue(current, item1, item2)
             else
-                println("\e[37mInterger solution with value $(tree[current].lb) found\e[00m")
+                if verbose_level>=3 println("\e[37mInterger solution with value $(tree[current].lb) found\e[00m") end
             end
-        elseif size(nodesol,1)==0
-            println("\e[37mThe node is infeasible\e[00m")
+        elseif (tree[current].lb>UB)
+            if verbose_level>=3 println("\e[37mThe node is pruned by bound\e[00m") end
         else
-            println("\e[37mThe node is pruned by bound\e[00m")
+            if verbose_level>=3 println("\e[37mThe node is infeasible\e[00m") end
         end
 
         global LB = tree[current].lb
         for i in queue
             if tree[i].lb <= LB global LB = tree[i].lb end
         end
-        println("\e[37mLB=$LB, UB=$UB\e[00m")
+        if verbose_level>=2 println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
 
         # Delete the current, prunes and infeasible nodes
         deleteat!(queue,findfirst(x -> x == current, queue))
@@ -94,7 +72,6 @@ function solve_BnP()
         end
     end
     display_bnp_result(bestsol)
-
 end
 
 function calculate_branching(node_sol)
@@ -123,6 +100,37 @@ function calculate_branching(node_sol)
     return (item1,item2)
 end
 
+function push_to_queue(nodeindex, item1, item2)
+    if verbose_level>=3 println("\e[35m Branching on items $item1 and $item2\e[00m") end
+    # Up branch
+    push!(tree,
+        Node(nodeindex,
+            [],
+            tree[nodeindex].lb,
+            vcat((item1,item2), tree[nodeindex].upbranch),
+            tree[nodeindex].downbranch))
+    push!(tree[nodeindex].children, length(tree))
+    if queueing_method == "LIFO"
+        push!(queue, length(tree))
+    else
+        pushfirst!(queue, length(tree))
+    end
+    # Down branch
+    push!(tree,
+        Node(nodeindex,
+            [],
+            tree[nodeindex].lb,
+            tree[nodeindex].upbranch,
+            vcat((item1,item2), tree[nodeindex].downbranch)))
+    push!(tree[nodeindex].children, length(tree))
+    if queueing_method == "FIFO"
+        push!(queue, length(tree))
+    else
+        pushfirst!(queue, length(tree))
+    end
+end
+
+
 function check_settings()
 
     errors = []
@@ -135,8 +143,8 @@ function check_settings()
         push!(errors,"< subproblem_method > parameter should either be 'gurobi' or 'dynamic'")
     end
 
-    if !(root_heuristic in [true, false])
-        push!(errors,"< root_heuristic > parameter should either be true or fasle")
+    if !(root_heuristic in ["FFD", "BFD", "WFD", "None"])
+        push!(errors,"< root_heuristic > parameter should either be 'FFD', 'BFD' 'WFD', or 'None")
     end
 
     if !(tree_heuristic in [true, false])

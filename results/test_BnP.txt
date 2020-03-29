@@ -4,12 +4,12 @@ Bin capacity : 1.0
 Number of items : 5
 Method : Branch-and-Price
 ****** Settings ******
-Branching rule : ryan_foster
+Branching rule : generic
 Subproblem method : gurobi
-Heuristic at root : false
+Heuristic at root : None
 Heuristic throughout tree : false
 Queueing method : FIFO
-Verbose level : 1
+Verbose level : 3
 ****** Result ******
 Number of bin used : 2.0
 Bin 1 contains objects : 1 2 4 

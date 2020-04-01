@@ -1,22 +1,22 @@
 mutable struct Data
-  ID::String                    # Problem ID
-  C::Float32                    # Bin capacity
-  N::Int                        # Number of items
-  best_bin::Int                 # Number ob bins in the best solution known
-  B::Int                        # Upper bound on bin number
-  S::Array{Float32}             # Item size
-  Data() = new()
+    ID::String      # Problem ID
+    C::Int          # Bin capacity
+    N::Int          # Number of items
+    B::Int          # Upper bound on bin number
+    S::Array{Int}   # Item size
+    Data() = new()
+end
+
+mutable struct SubproblemRules
+    setzero::Vector{Int}    # Items set to zero in the subproblem
+    setone::Vector{Int}     # Items set to one in the subproblem
 end
 
 mutable struct Node
-  parent::Int                   # Parent's node index
-  children::Vector{Int}         # Children's node index
-  lb::Float32                   # Node lower bound
-  upbranch::Array{Tuple}        # Couple of items for up-branch rules
-  downbranch::Array{Tuple}      # Couple of items for down-branch rules
-end
-
-mutable struct Branching_Scheme
-  setzero::Vector{Int}
-  setone::Vector{Int}
+    parent::Int                                 # Index of the parent node
+    children::Vector{Int}                       # Indexes of the children nodes
+    lb::Float32                                 # Node lower bound
+    upbranch::Array{Tuple}                      # Couple of items involved in a up-branching rule
+    downbranch::Array{Tuple}                    # Couple of items involved in a down-branching rule
+    subproblem_rules::Array{SubproblemRules}   # Subproblems rules (only used for the generic branching rule)
 end

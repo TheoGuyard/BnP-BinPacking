@@ -1,0 +1,17 @@
+\subsection{Bin-Packing Problem}
+
+In this report, we focus on the Bin-Packing Problem. It consists of putting objects with a given size in the minimum number of bins with the same capacity. Consider that set if items is given by $I = \{1,\dots,N\}$, their size by $S = \{s_1,\dots,s_n\}$ and $B$ bins with a capacity $C$ are available. The number of bins is supposed large enough to store all the $n$ objects. Thus, the Bin-Packing Problem can be written under the following form :
+\begin{equation}
+	\label{BPP-classic}
+	\left \{
+	\begin{array}{*5{>{\displaystyle}l}}
+	\min & \sum_{b=1}^B{y_b} \\
+	\st & \sum_{i=1}^N s_i x_{ij} \leq C y_b & \forall \ b = 1,\dots,B \\
+	& \sum_{b=1}^N x_{ib} = 1 & \forall \ i = 1,\dots,N \\
+	& x_{ib} \in \{0,1\} & \forall \ i=1,\dots,N & \forall \ b = 1,\dots,B \\
+	& y_{b} \in \{0,1\} &  \forall \ b = 1,\dots,B
+	\end{array}
+	\right.
+	\tag{$\Bbb\Pbb\Pbb$}
+\end{equation}
+Where $x_{ib}=1$ if the item $i$ is packed in the bin number $b$ ($x_{ib}=0$ otherwise) and $y_b=1$ if the bin number $b$ is non-empty ($y_b=0$ otherwise). The first constraint ensure that the bin capacity is not exceeded and the constraint number two ensure that each item is packed in a bin. This problem is known to be NP-hard.

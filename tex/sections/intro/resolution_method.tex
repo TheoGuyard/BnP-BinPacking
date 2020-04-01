@@ -1,0 +1,7 @@
+\subsection{Resolution method}
+
+To solve the Bin-Packing Problem, we will use two different branching rules. The first one was proposed by Ryan \& Foster in 1981 \cite{ryan1981rn}. This branching rule allow to keep a single subproblem at each node but doesn't preserve the knapsack structure of the problem. The subproblems will rather be knapsack with conflicts problems, harder to solve than the usual knapsack problem. The second branching rule which will be used is a generic branching scheme introduced by Vance in 1994 \cite{vance1994solving}. This branching rule preserve the knapsack structure of the subproblems but at each node, multiple subproblems will have to be solved.
+
+For the Ryan \& Foster branching rule, two method will be proposed for the subproblem resolution. The first one is to use a classical solver so as to model and solve the subproblem with the new branching constraints. We will also see how to solve the subproblems with dynamic programming \cite{toth1980dynamic}. For the Generic branching rule, we will also propose to solve the subproblem either with a solver or with a dynamic programming algorithm \cite{sadykov2013bin}.
+
+In addition, we will see how to construct an heuristic solution before the tree exploration in order to set better initial bounds. Three  variations of a decreasing-size-order packing algorithm will be proposed \cite{bhatia2009better}.

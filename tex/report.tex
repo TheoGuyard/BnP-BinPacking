@@ -13,9 +13,40 @@
 % Bib file
 \addbibresource{sections/references.bib}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{document}
 
 \input{sections/titlepage.tex}
+
+\tableofcontents
+\newpage
+
+\section{Introduction}
+\input{sections/intro/problem.tex}
+\input{sections/intro/set_covering_formulation.tex}
+\input{sections/intro/resolution_method.tex}
+\newpage
+
+\section{Ryan-Foster branching rule}
+\input{sections/rf_branching/node.tex}
+\input{sections/rf_branching/subproblem.tex}
+\newpage
+
+\section{Generic branching constraints}
+\input{sections/generic_branching/node.tex}
+\input{sections/generic_branchig/subproblem.tex}
+\newpage
+
+\section{Heuristics}
+\input{sections/heuristics/root.tex}
+\newpage
+
+\section{Numerical applications}
+\input{sections/applications/implementation.tex}
+\input{sections/applications/results.tex}
+\input{sections/applications/analysis.tex}
+\newpage
 
 \printbibliography
 

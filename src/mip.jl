@@ -1,10 +1,11 @@
 include("display.jl")
 
 function solve_MIP()
+    """Formulation and resolution and of the BPP problem."""
 
     println("\e[92m********** Solve MIP ****************\e[00m")
 
-    model = Model(with_optimizer(Gurobi.Optimizer, GUROBI_ENV, OutputFlag=0))
+    model = Model(with_optimizer(Gurobi.Optimizer, GUROBI_ENV, OutputFlag = 0))
 
     # u_b = 1 if bin b is used and u_b = 0 otherwise
     @variable(model, u[b in 1:data.B], Bin)
@@ -12,11 +13,15 @@ function solve_MIP()
     @variable(model, x[i in 1:data.N, b in 1:data.B], Bin)
 
     # Packing constraint
-    @constraint(model, packed[i in 1:data.N], sum(x[i,b] for b in 1:data.B) == 1)
+    @constraint(model, packed[i in 1:data.N], sum(x[i, b] for b = 1:data.B) >= 1)
     # Capacity constraint
-    @constraint(model, capacity[b in 1:data.B], sum(x[i,b]*data.S[i] for i in 1:data.N) <= u[b]*data.C)
+    @constraint(
+        model,
+        capacity[b in 1:data.B],
+        sum(x[i, b] * data.S[i] for i = 1:data.N) <= u[b] * data.C
+    )
 
-    @objective(model, Min, sum(u[b] for b in 1:data.B))
+    @objective(model, Min, sum(u[b] for b = 1:data.B))
 
     println("\e[37mSolving problem ... \e[00m")
     optimize!(model)
@@ -26,5 +31,5 @@ function solve_MIP()
     x = JuMP.value.(x)
     status = JuMP.termination_status(model)
 
-    display_mip_result(obj,u,x,status)
+    display_mip_result(obj, u, x, status)
 end

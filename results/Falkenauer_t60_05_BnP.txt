@@ -1,12 +1,12 @@
 ****** Problem ******
 Instance : Falkenauer_t60_05.txt
-Bin capacity : 1000.0
+Bin capacity : 1000
 Number of items : 60
 Method : Branch-and-Price
 ****** Settings ******
-Branching rule : generic
+Branching rule : ryan_foster
 Subproblem method : gurobi
-Heuristic at root : None
+Heuristic at root : FFD
 Heuristic throughout tree : false
 Queueing method : FIFO
 Verbose level : 3

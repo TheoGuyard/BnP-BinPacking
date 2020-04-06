@@ -6,11 +6,14 @@ Method : Branch-and-Price
 ****** Settings ******
 Branching rule : ryan_foster
 Subproblem method : gurobi
-Heuristic at root : FFD
+Heuristic at root : None
 Heuristic throughout tree : false
 Queueing method : FIFO
 Verbose level : 3
 ****** Result ******
+Running time : -37.0 seconds
+Nodes explored : 4
+Root heursitic objective : Inf
 Number of bin used : 20.0
 Bin 1 contains objects : 15 23 42 
 Bin 2 contains objects : 1 56 60 

@@ -30,6 +30,8 @@ function solve_MIP()
     u = JuMP.value.(u)
     x = JuMP.value.(x)
     status = JuMP.termination_status(model)
+    solvingTime = round(JuMP.solve_time(model))
 
-    display_mip_result(obj, u, x, status)
+    display_mip_result(obj, u, x, status, solvingTime)
+    return nothing
 end

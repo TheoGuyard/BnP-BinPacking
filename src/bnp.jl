@@ -3,16 +3,18 @@ include("node.jl")
 include("display.jl")
 include("heuristics.jl")
 
-function solve_BnP()
+function solve_BnP(maxTime=Inf, benchmark=false)
     """Core structure of the branch-and-price algorithm."""
+
+    start = Dates.second(Dates.now())
 
     if !check_settings()
         return nothing
     end
 
-    println("\e[92m*********** Solve BnP ****************\e[00m")
+    if (verbose_level >= 1) println("\e[92m*********** Solve BnP ****************\e[00m") end
 
-    if (verbose_level <= 1) println("\e[37mTree is beeing explored ... \e[00m") end
+    if (verbose_level == 1) println("\e[37mTree is beeing explored ... \e[00m") end
 
     # Each column correspond to a pattern. The first element is the column cost and the other
     # elements indicate if an item is used in the pattern or not.
@@ -22,13 +24,14 @@ function solve_BnP()
     global UB = Inf
     global LB = -Inf
     global bestsol = []
+    global nbNodeExplored = 0
 
     # Nodes are stored in a tree and then stored in the queue using their tree index
     global tree = Vector{Node}()
     global queue = Vector{Int}()
 
     # Root initialization
-    push!(tree, Node(0, [], -Inf, [], [], [SubproblemRules([],[])]))
+    push!(tree, Node())
     push!(queue, 1)
 
     # Root heuristic can be run before the branch-and-price
@@ -37,8 +40,14 @@ function solve_BnP()
         process_root_heuristic()
         if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
     end
+    global rootHeuristicObjective = UB
 
     while length(queue) > 0
+
+        if (Dates.second(Dates.now())-start)/1000 > maxTime
+            println("\e[91mMax time reached !\e[00m")
+            break
+        end
 
         if (verbose_level >= 3) println("\e[37mQueue : $queue\e[00m") end
 
@@ -57,7 +66,14 @@ function solve_BnP()
         end
     end
 
-    display_bnp_result(bestsol)
+    stop = Dates.second(Dates.now())
+    runningTime = min((stop-start)/1000, maxTime)
+    if benchmark
+        return UB, rootHeuristicObjective, nbNodeExplored, runningTime
+    else
+        display_bnp_result(bestsol, runningTime)
+        return nothing
+    end
 
 end
 
@@ -140,9 +156,9 @@ function create_child_nodes(nodeindex, item1, item2)
             nodeindex,          #  Index of the parent node
             [],                 # Index of the child nodes
             tree[nodeindex].lb,         # Lower bound initialized as the value of parent lower bound
-            vcat((item1, item2), tree[nodeindex].upbranch),     # New up-branching rules
-            tree[nodeindex].downbranch,     # Down-branching rules of the parent node
-            calculate_subproblem_rules(nodeindex, item1, item2, "up")   # New ubproblem rules (only used for the generic branching scheme)
+            vcat((item1, item2), tree[nodeindex].upBranch),     # New up-branching rules
+            tree[nodeindex].downBranch,     # Down-branching rules of the parent node
+            calculate_subproblem_sets(nodeindex, item1, item2, "up")   # New ubproblem rules (only used for the generic branching scheme)
         )
     )
     add_child(nodeindex)
@@ -154,60 +170,72 @@ function create_child_nodes(nodeindex, item1, item2)
             nodeindex,          #  Index of the parent node
             [],                 # Index of the child nodes
             tree[nodeindex].lb,     # Lower bound initialized as the value of parent lower bound
-            tree[nodeindex].upbranch,   # Up-branching rules of the parent node
-            vcat((item1, item2), tree[nodeindex].downbranch),   # New down-branching rules
-            calculate_subproblem_rules(nodeindex, item1, item2, "down")   # New ubproblem rules (only used for the generic branching scheme)
+            tree[nodeindex].upBranch,   # Up-branching rules of the parent node
+            vcat((item1, item2), tree[nodeindex].downBranch),   # New down-branching rules
+            calculate_subproblem_sets(nodeindex, item1, item2, "down")   # New ubproblem rules (only used for the generic branching scheme)
         ),
     )
     add_child(nodeindex)
 
 end
 
-function calculate_subproblem_rules(nodeindex, item1, item2, branch)
+function calculate_subproblem_sets(nodeindex, item1, item2, branch)
     """Compute the new branching schemes for the generic branching rules."""
 
     # Each existing branching scheme is splitted into two new branching schemes where the new rules are added
-    subproblem_rules = copy(tree[nodeindex].subproblem_rules)
+    subproblemSets = []
 
-    if branching_rule != "generic"
-        return subproblem_rules
+    if branching_rule == "ryan_foster"
+        return copy(tree[nodeindex].subproblemSets)
     end
 
-    for b in 1:size(subproblem_rules,1)
-        if branch == "up"
-            # New rules added to existing branching schemes : (item1 = item2 = 1), (item1 = item2 = 0)
-            push!(subproblem_rules,
-                SubproblemRules(
-                    subproblem_rules[b].setzero,
-                    unique(vcat(subproblem_rules[b].setone, [item1,item2]))
-                )
-            )
-            subproblem_rules[b].setzero = unique(vcat(subproblem_rules[b].setzero, [item1, item2]))
-        elseif branch == "down"
-            # New rules added to existing branching schemes : (item1 = 0), (item1 = 1, item2 = 0)
-            push!(subproblem_rules,
-                SubproblemRules(
-                    unique(vcat(subproblem_rules[b].setzero, item2)),
-                    unique(vcat(subproblem_rules[b].setone, item1))
-                )
-            )
-            subproblem_rules[b].setzero = unique(vcat(subproblem_rules[b].setzero, item1))
-        end
-    end
-
-    # Branching schemes with contradictory constraints are deleted
-    to_delete = []
-    for s = 1:size(subproblem_rules, 1)
-        for i = 1:data.N
-            if (i in subproblem_rules[s].setzero) && (i in subproblem_rules[s].setone)
-                push!(to_delete, s)
-                break
+    for s in tree[nodeindex].subproblemSets
+        if s.coeff > 1
+            # Set splits into two different sets   
+            r = s.rules[1]
+            # First set (with coefficient L-1)
+            if branch == "up"
+                newRule1 = Rule(unique(vcat(r.setzero, [item1, item2])), r.setone)
+            elseif branch == "down"
+                newRule1 = Rule(unique(vcat(r.setzero, [item1])), r.setone)
             end
+            # Second set (with coeficient 1)
+            if branch == "up"
+                newRule2 = Rule(r.setzero, unique(vcat(r.setone, [item1, item2])))
+            elseif branch == "down"
+                newRule2 = Rule(unique(vcat(r.setzero, [item2])), unique(vcat(r.setone, [item1])))
+            end
+            # Add the new subproblem sets
+            if size(intersect(newRule2.setzero, newRule2.setone),1) == 0
+                push!(subproblemSets, SubproblemSet([newRule1], s.coeff-1))
+                push!(subproblemSets, SubproblemSet([newRule2], 1))
+            else
+                push!(subproblemSets, SubproblemSet([newRule1], s.coeff))
+            end
+        else
+            # New rules are added to the set but the coefficient remains the same
+            coeff =  s.coeff
+            rules = []
+            for r in s.rules
+                if branch == "up"
+                    newRule1 = Rule(unique(vcat(r.setzero, [item1, item2])), r.setone)
+                    newRule2 = Rule(r.setzero, unique(vcat(r.setone, [item1, item2])))
+                elseif branch == "down"
+                    newRule1 = Rule(unique(vcat(r.setzero, item1)), r.setone)
+                    newRule2 = Rule(unique(vcat(r.setzero, item2)), unique(vcat(r.setone, item1)))
+                end
+                if size(intersect(newRule1.setzero, newRule1.setone),1) == 0
+                    push!(rules, newRule1)
+                end
+                if size(intersect(newRule2.setzero, newRule2.setone),1) == 0
+                    push!(rules, newRule2)
+                end
+            end
+            push!(subproblemSets, SubproblemSet(rules, coeff))
         end
     end
-    deleteat!(subproblem_rules, to_delete)
 
-    return subproblem_rules
+    return subproblemSets
 
 end
 
@@ -265,8 +293,8 @@ function check_settings()
         push!(errors, "< queueing_method > parameter should either be 'FIFO' or 'LIFO'")
     end
 
-    if !(verbose_level in [1, 2, 3])
-        push!(errors, "< verbose_level > parameter should either be 1, 2 or 3")
+    if !(verbose_level in [0, 1, 2, 3])
+        push!(errors, "< verbose_level > parameter should either be 1, 2 or 3 and can be 0 only for benchmarks")
     end
 
     if !((ϵ > 10^(-16)) && (ϵ < 10^(-4)))

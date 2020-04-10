@@ -1,4 +1,5 @@
 function solve_knapsack(profits, weights, capacity)
+    """Dynamicaly solve the classical knapsack problem."""
 
     nb_items = length(weights)
     table = zeros(nb_items+1, capacity+1)
@@ -16,19 +17,12 @@ function solve_knapsack(profits, weights, capacity)
     cost = table[end,end]
 
     # Backtraking to find items involved in the optimal cost
-    selected_items = []
+    solution = zeros(nb_items)
     j = capacity + 1
     for i in (nb_items+1):-1:2
         if table[i,j] != table[i-1,j]
-            push!(selected_items, i-1)
+            solution[i-1] = 1
             j = j - weights[i-1]
-        end
-    end
-
-    solution = zeros(nb_items)
-    for i in 1:nb_items
-        if i in selected_items
-            solution[i] = 1
         end
     end
 

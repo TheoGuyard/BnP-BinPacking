@@ -6,26 +6,29 @@ include("bnp.jl")
 include("mip.jl")
 
 function benchmarks(datasetDirectory, maxItems, maxTime)
+  """Run the BnP on each file contained in the <datasetDirectory> if the dataset has
+  less than <maxItems> items in it. The BnP stops if the <maxTime> is reached."""
 
   println("\e[92m************ Benchmarks ***************\e[00m")
 
-    global verbose_level = 0
+  global verbose_level = 0
     
-    benchmarks = DataFrame(
-      ID = String[],
-      capacity = Int[],
-      nbItems = Int[],
-      branchingRule = String[],
-      subproblemMethod = String[],
-      rootHeuristic = String[],
-      treeHeuristic = Bool[],
-      queueingMethod = String[],
-      ϵ = Float32[],
-      objectiveValue = Float32[],
-      rootHeuristicObjective = Float32[],
-      nbNodesExplored = Int[],
-      runningTime = Float32[]
-    )
+  # Benchmarks results are stored in a DataFrame
+  benchmarks = DataFrame(
+    ID = String[],
+    capacity = Int[],
+    nbItems = Int[],
+    branchingRule = String[],
+    subproblemMethod = String[],
+    rootHeuristic = String[],
+    treeHeuristic = Bool[],
+    queueingMethod = String[],
+    ϵ = Float32[],
+    objectiveValue = Float32[],
+    rootHeuristicObjective = Float32[],
+    nbNodesExplored = Int[],
+    runningTime = Float32[]
+  )
 
   for dataset in readdir(datasetDirectory)
     
@@ -55,6 +58,7 @@ function benchmarks(datasetDirectory, maxItems, maxTime)
     )
   end
 
+  # Write the benchmark in a textfile with the datetime as title
   title = Dates.format(now(), "dd:u:yyyy-HH:MM")
   CSV.write("results/benchmarks/$(title).csv",  benchmarks, writeheader=true)
 

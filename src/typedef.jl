@@ -23,7 +23,7 @@ end
 
 mutable struct Node
     parent::Int                                     # Index of the parent node
-    children::Array{Int}                           # Indexes of the children nodes
+    children::Array{Int}                            # Indexes of the children nodes
     lb::Float32                                     # Node lower bound
     upBranch::Array{Tuple}                          # Couple of items involved in a up-branching rule
     downBranch::Array{Tuple}                        # Couple of items involved in a down-branching rule

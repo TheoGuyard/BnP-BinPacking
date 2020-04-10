@@ -1,0 +1,43 @@
+The structure of the branch of price algorithm is the same whatever branching-rule, queueing method, heuristics and other parameters are chosen. It can be resumed by the following algorithm :
+
+\begin{figure}[!ht]
+	\centering
+	\begin{minipage}{0.9\linewidth}
+		\begin{algorithm}[H]
+			\DontPrintSemicolon 
+			\SetAlgoLined
+			\KwIn{The items and their size $s_1,\dots,s_N$, the bin capacity $C$, an upper bound on the number of bins $B$, a precision $\epsilon$}
+			\tcp{Initialization}
+			Initialize an empty tree\;
+			Initialize the queue with the root\;
+			Initialize the column pool with an artificial column\;
+			Initialize UB $\leftarrow +\infty$\;
+			Initialize LB $\leftarrow -\infty$\;
+			Process an heuristic to find a better UB (see \ref{heuristic-root})\;
+			\tcp{Tree exploration}
+			\While{the queue is non-empty}{
+				Process a tree heuristic to tighten UB (see \ref{heuristic-tree})\;
+				Pop the first node in the queue\;
+				Proceed the node according to the branching rule set (see \ref{ryan-foster} or \ref{generic})\;
+				Find the branching variable and add the two child nodes to the queue\;
+				Update LB and UB with the solution found in the node\;
+				Cut the branch that cannot improove the upper bound\;
+				\If{$|LB-UB|<\epsilon$}{return the best solution associated to UB}
+			}
+			\caption{Branch and Price}
+		\end{algorithm}
+	\end{minipage}
+\end{figure}
+\noindent We will explain with more details some of the steps.
+
+The column pool contains all the columns which are created by the subproblems. We need to add an artificial column which allow the master problem to always have a solution. This artificial column contains all the objects and have a very high cost. It the solution of a master problem contains this artificial column, we know that the master problem is infeasible because of the branching rules.
+
+In the loop, we always choose the first node in the queue but the nodes won't always been stored in that same order in the queue. When adding the two child nodes to the queue, two method can be used. The first one puts the new nodes at the beginning of the queue (LIFO) in order to proceed a Deep-First-Search in the tree. The second method is to put the new nodes at the end of the queue (FIFO) in order to proceed a Breadth-First-Search. The LIFO method will allow to find quickly good upper bounds but it will cut branches more deeply in the tree. The FIFO method will allow to cut branches at a high level in the tree but will be slower to get good bounds. The best exploration method depends on the structure of the problem and in general, there is no one better than the other.
+
+After the node proceeding, it is possible that the solution given is integer. In this case, we can see if this solution improve the current UB and if it i the case, we can update the value of UB. We also choose the best lower bound among all those of the nodes in order to update the global LB. This allow to see how close the algorithm is from the solution by bounding the optimal solution by LB and UB at each node processing.
+
+Once the bounds are updated, we take a look at the nodes left in the queue. If a node has a lower bound greater than UB, then this node can't improve the current best solution. Thus, we can stop the exploration of the branch after this node.
+
+When $UB \simeq LB$, then the current best solution can not be improved and correspond to the optimal solution of \eqref{BPP-classic}. If the queue becomes empty while $UB \neq LB$, this means that either the problem has no solution or that $\epsilon$ is too small regarding to numerical errors.
+
+The method to proceed a node, to run heuristics before and within the tree will be explained in the following sections. Then, we will evaluate the BnP with some performance criteria.

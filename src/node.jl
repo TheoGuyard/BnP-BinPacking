@@ -14,13 +14,15 @@ function process_node(nodeindex)
     global nodestobedeleted = []
     global nbNodeExplored += 1
 
+    # Keep only the columns satisfying the current branching rules
     if branching_rule == "generic"
         node_pool = calculate_columns_generic(nodeindex)
     elseif branching_rule == "ryan_foster"
         node_pool = calculate_columns_ryan_foster(nodeindex)
     end
 
-    master, alpha, packed, boundness = solve_master(node_pool, tree[nodeindex].subproblemSets)
+    # Initialize the master problem
+    master, alpha, packed, redundant = solve_master(node_pool, tree[nodeindex].subproblemSets)
 
     while true
 
@@ -28,7 +30,7 @@ function process_node(nodeindex)
 
         # Gather master outputs
         π = JuMP.dual.(packed)
-        σ = JuMP.dual.(boundness)
+        σ = JuMP.dual.(redundant)
         value = JuMP.objective_value(master)
         solution = JuMP.value.(alpha)
 
@@ -39,6 +41,7 @@ function process_node(nodeindex)
                 global UB = value
                 global bestsol = calculate_solution(solution, node_pool)
             end
+            # Delete nodes with too high lower bound
             for i = 1:length(queue)-1
                 if tree[queue[i]].lb >= UB
                     push!(nodestobedeleted, i)
@@ -50,9 +53,12 @@ function process_node(nodeindex)
         nodelb = sum(π)
         min_reduced_cost = 0
 
-        # Solve one subproblem per subproblem rule (only one subproblem for Ryan & Foster branching rule)
+        # Solve one subproblem per branching rules inside a subproblem Set.
+        # For the Ryan & Foster rules, there is only one subproblem with one
+        # rule so only one subproblem is solved.
         for s in 1:size(tree[nodeindex].subproblemSets,1)
             for r in tree[nodeindex].subproblemSets[s].rules
+                # Solve the subproblem and compute the real reduced cost
                 subproblem_obj, column = solve_subproblem(nodeindex, r, π)
                 reduced_cost = subproblem_obj - σ[s]
                 # Check is subproblem is feasible
@@ -67,6 +73,7 @@ function process_node(nodeindex)
                         # The cost of a new column is always 1
                         push!(column_pool, vcat(1, round.(column)))
                         push!(node_pool, vcat(1, round.(column)))
+                        # Add the new pattern to the master problem
                         push!(alpha, @variable(master, lower_bound = 0))
                         set_name(alpha[end], "alpha_$(size(column_pool,1))")
                         for i = 1:data.N
@@ -86,7 +93,8 @@ function process_node(nodeindex)
         # Update bound
         tree[nodeindex].lb = nodelb
 
-        # If no subproblems are added and node is not degenerated, stop to solve subproblems
+        # If no subproblems are added and node is not degenerated, the node
+        # processing is stopped
         if (2 * abs((nodeub - tree[nodeindex].lb)) / abs((nodeub + tree[nodeindex].lb)) < ϵ) || (min_reduced_cost >= -ϵ)
             if solution[1] >= ϵ
                 if (verbose_level >= 3) println("\e[36m Artificial column used, node is infeasible \e[00m") end

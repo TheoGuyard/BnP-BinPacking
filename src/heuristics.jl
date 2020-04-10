@@ -1,7 +1,10 @@
 function process_root_heuristic()
-    """Root heuristic algorithm before starting the branch-and-price exploration."""
+    """Initial heuristic algorithm before starting the branch-and-price
+    exploration. Three heuristics are available : FFD, BFD and WFD. The
+    algorithm structure is the same but the choice of the bin is different."""
 
-    if (verbose_level >= 3) println("\e[93m Processing $root_heuristic at root \e[00m") end
+    if (verbose_level >= 3) println("\e[37mBound initialization with an heuristic \e[00m") end
+    if (verbose_level >= 3) println("\e[93m Processing $root_heuristic \e[00m") end
 
     sizes = copy(data.S)
     bins = Array{Array{Int},1}()
@@ -12,7 +15,7 @@ function process_root_heuristic()
 
     while nb_packed < data.N
 
-        # Pack items in decreasing size order.
+        # Pack items in decreasing size order
         i = findmax(sizes)[2]
         w = sizes[i]
         sizes[i] = 0
@@ -61,5 +64,8 @@ function process_root_heuristic()
 
     global bestsol = bins
     global UB = size(bins, 1)
+    global rootHeuristicObjective = UB
+
+    if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
 
 end

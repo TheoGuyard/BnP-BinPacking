@@ -6,44 +6,46 @@ include("heuristics.jl")
 function solve_BnP(maxTime=Inf, benchmark=false)
     """Core structure of the branch-and-price algorithm."""
 
-    start = Dates.second(Dates.now())
-
+    # If settings are incorrect, the algorithm won't start
     if !check_settings()
         return nothing
     end
 
     if (verbose_level >= 1) println("\e[92m*********** Solve BnP ****************\e[00m") end
-
     if (verbose_level == 1) println("\e[37mTree is beeing explored ... \e[00m") end
+
+    start = Dates.second(Dates.now())
 
     # Each column correspond to a pattern. The first element is the column cost and the other
     # elements indicate if an item is used in the pattern or not.
     global column_pool = Array{Array{Int,1},1}()
+    # An artificial column with a high cost is added to make every master
+    # problem at least feasible with this column.
     push!(column_pool, vcat(data.B, ones(Int, data.N)))
 
     global UB = Inf
     global LB = -Inf
     global bestsol = []
+    global rootHeuristicObjective = UB
     global nbNodeExplored = 0
 
-    # Nodes are stored in a tree and then stored in the queue using their tree index
+    # Nodes are stored in a tree and stored in the queue using their tree index
     global tree = Vector{Node}()
     global queue = Vector{Int}()
 
-    # Root initialization
+    # An heuristic can be run before the branch-and-price to obtain a first UB
+    if (root_heuristic != "None")
+        process_root_heuristic()
+    end
+
+    # Tree initialization with the root
     push!(tree, Node())
     push!(queue, 1)
 
-    # Root heuristic can be run before the branch-and-price
-    if (root_heuristic != "None")
-        if (verbose_level >= 3) println("\e[37mRoot \e[00m") end
-        process_root_heuristic()
-        if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
-    end
-    global rootHeuristicObjective = UB
-
+    # Explore the tree while the are nodes to be explored
     while length(queue) > 0
 
+        # Stop the algorithm is the <maxTime> is reached
         if (Dates.second(Dates.now())-start)/1000 > maxTime
             println("\e[91mMax time reached !\e[00m")
             break
@@ -51,16 +53,20 @@ function solve_BnP(maxTime=Inf, benchmark=false)
 
         if (verbose_level >= 3) println("\e[37mQueue : $queue\e[00m") end
 
+        # Pop the last node in the queue and solve it to optimality
         current = queue[end]
-        # Process the node until optimality is reached
         nodesol = process_node(current)
-        # Wether continue the branching or prune the current node
+
+        # Continue the exploration of the branch or prune the current node
         branch_or_prune(current, nodesol)
-        # Update global bounds
+
+        # Update global LB and UB
         update_bounds()
+
         # Test if other nodes can be pruned regarding to the new bounds
         prune_tree(current)
 
+        # Stop the BnP when LB ~ UB
         if (2 * (UB - LB) / (UB + LB)) <= ϵ
             break
         end
@@ -68,6 +74,9 @@ function solve_BnP(maxTime=Inf, benchmark=false)
 
     stop = Dates.second(Dates.now())
     runningTime = min((stop-start)/1000, maxTime)
+
+    # If the BnP is run for a benchmark, the resuts are returned but in a
+    # standard case, they are printed to the console
     if benchmark
         return UB, rootHeuristicObjective, nbNodeExplored, runningTime
     else
@@ -79,7 +88,8 @@ end
 
 
 function prune_tree(nodeindex)
-    """Remove the current node from the queue and prune nodes that can be deleted besides it."""
+    """Remove the current node from the queue and prune nodes that can be
+    deleted beside it."""
 
     deleteat!(queue, findfirst(x -> x == nodeindex, queue))
     deleteat!(queue, unique(nodestobedeleted))
@@ -112,7 +122,8 @@ end
 
 
 function update_bounds()
-    """Update global bounds regarding to the new solution provided by the node."""
+    """Update global bounds regarding to the new solution provided by the
+    last node."""
 
     global LB = minimum([tree[i].lb for i in queue])
     if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
@@ -121,7 +132,7 @@ end
 
 
 function calculate_branching(nodesol)
-    """Find two items to branch on."""
+    """Find two items for the branching."""
 
     for i = 1:data.N
         for j = 1:data.N
@@ -146,19 +157,19 @@ end
 
 
 function create_child_nodes(nodeindex, item1, item2)
-    """Push two new nodes after a branching is found."""
+    """Push two new nodes in the queue with new branching constraints."""
 
     if (verbose_level >= 3) println("\e[35m Branching on items $item1 and $item2\e[00m") end
 
     # New node with up-branching rules
     push!(tree,
         Node(
-            nodeindex,          #  Index of the parent node
-            [],                 # Index of the child nodes
-            tree[nodeindex].lb,         # Lower bound initialized as the value of parent lower bound
-            vcat((item1, item2), tree[nodeindex].upBranch),     # New up-branching rules
-            tree[nodeindex].downBranch,     # Down-branching rules of the parent node
-            calculate_subproblem_sets(nodeindex, item1, item2, "up")   # New ubproblem rules (only used for the generic branching scheme)
+            nodeindex,  #  Index of the parent node
+            [], # Index of the child nodes
+            tree[nodeindex].lb, # Lower bound initialized as the value of parent lower bound
+            vcat((item1, item2), tree[nodeindex].upBranch), # New up-branching rules
+            tree[nodeindex].downBranch, # Down-branching rules of the parent node
+            calculate_subproblem_sets(nodeindex, item1, item2, "up")    # New subproblem rules (only used for the generic branching scheme)
         )
     )
     add_child(nodeindex)
@@ -167,12 +178,12 @@ function create_child_nodes(nodeindex, item1, item2)
     push!(
         tree,
         Node(
-            nodeindex,          #  Index of the parent node
-            [],                 # Index of the child nodes
-            tree[nodeindex].lb,     # Lower bound initialized as the value of parent lower bound
+            nodeindex,  # Index of the parent node
+            [], # Index of the child nodes
+            tree[nodeindex].lb, # Lower bound initialized as the value of parent lower bound
             tree[nodeindex].upBranch,   # Up-branching rules of the parent node
             vcat((item1, item2), tree[nodeindex].downBranch),   # New down-branching rules
-            calculate_subproblem_sets(nodeindex, item1, item2, "down")   # New ubproblem rules (only used for the generic branching scheme)
+            calculate_subproblem_sets(nodeindex, item1, item2, "down")   # New subproblem rules (only used for the generic branching scheme)
         ),
     )
     add_child(nodeindex)
@@ -180,18 +191,20 @@ function create_child_nodes(nodeindex, item1, item2)
 end
 
 function calculate_subproblem_sets(nodeindex, item1, item2, branch)
-    """Compute the new branching schemes for the generic branching rules."""
+    """Compute the new branching schemes for the generic branching rule."""
 
-    # Each existing branching scheme is splitted into two new branching schemes where the new rules are added
+    # Each existing branching scheme is splitted into two new branching schemes
+    # where the new rules are added
     subproblemSets = []
 
+    # For the Ryan & Foster branching rule, the <subproblemSets> are not used
     if branching_rule == "ryan_foster"
         return copy(tree[nodeindex].subproblemSets)
     end
 
     for s in tree[nodeindex].subproblemSets
         if s.coeff > 1
-            # Set splits into two different sets   
+            # Set splits into two different sets
             r = s.rules[1]
             # First set (with coefficient L-1)
             if branch == "up"
@@ -205,7 +218,7 @@ function calculate_subproblem_sets(nodeindex, item1, item2, branch)
             elseif branch == "down"
                 newRule2 = Rule(unique(vcat(r.setzero, [item2])), unique(vcat(r.setone, [item1])))
             end
-            # Add the new subproblem sets
+            # Add the new subproblem sets if they are not incompatible
             if size(intersect(newRule2.setzero, newRule2.setone),1) == 0
                 push!(subproblemSets, SubproblemSet([newRule1], s.coeff-1))
                 push!(subproblemSets, SubproblemSet([newRule2], 1))
@@ -240,7 +253,8 @@ function calculate_subproblem_sets(nodeindex, item1, item2, branch)
 end
 
 function add_child(nodeindex)
-    """Add a new node to the queue according to the queuing method."""
+    """Add a new node to the queue and the tree according to the
+    queuing method."""
 
     push!(tree[nodeindex].children, length(tree))
 
@@ -254,6 +268,7 @@ end
 
 
 function check_settings()
+    """Check the settings passed for the BnP algorithm."""
 
     errors = []
 

@@ -1,5 +1,6 @@
 # Branch-and-Price for the Bin-Packing problem
 
+**Author** : Théo Guyard
 
 **Language** : `Julia 1.4`
 
@@ -7,18 +8,31 @@
 
 ---
 
+## ToDo
+
+- [x] Ryan & Foster branching rule
+- [x] Generic branching rule
+- [x] Root heuristics
+- [x] FIFO and LIFO queuing rule 
+- [x] Set verbose level
+- [ ] Dynamic programming for Ryan & Foster branching rule
+- [x] Dynamic programming for Generic branching rule
+- [x] Benchmarks
+- [ ] Heuristics within tree
+- [ ] Diving search strategy
+
 ## Usage
 
 1. Clone the repository
 ```
     git clone git://github.com/TheoGuyard/BnP-BinPacking.git
 ```
-2. Open `Julia` or an IDE at project in (directory containing `README.md`)
+2. Open `Julia` or an IDE at project root (directory containing `README.md`)
 3. Intall dependencies
 ```
-    (@v1.4) pkg> add JuMP, Gurobi, DelimitedFiles
+    (@v1.4) pkg> add JuMP, Gurobi, DelimitedFiles, Dates, CSV, DataFrames
 ```
-4. Make sure that [Gurobi environement variable](https://github.com/JuliaOpt/Gurobi.jl) is set
+4. Make sure that [Gurobi environment variable](https://github.com/JuliaOpt/Gurobi.jl) is set
 ```
     julia> ENV["GUROBI_HOME"] = "/path/to/gurobi/lib"
 ```
@@ -52,27 +66,14 @@ File discribed below are in the folder `Bnp-BinPacking/src/`.
 * `main.jl` : Parameter initialization and code entry
 * `bnp.jl` : Branch-and-Price core structure
 * `master.jl` : Resticted master problem resolution method
-* `node_ryan_foster.jl` : Node processing the Ryan & Foster branching rule
-* `subproblem_ryan_foster.jl` : Subproblem resolution method for the Ryan & Foster branching rule
-* `node_generic.jl` : Node processing the generic branching rule
-* `subproblem_generic.jl` : Subproblem resolution method for the generic branching rule
+* `node.jl` : Core structure of node processing resolution
+* `subproblem.jl` : Subproblem resolution method
+* `knapsack.jl` : Knapsack algorithms
 * `heurisitcs.jl` : Heuristic algorithms used within the Branch-and-Price algorithm
+* `benchmarks.jl` : Run benchmarks for the dataset directory specified
 * `display.jl` : Display algorithm results
 * `data.jl` : Read data from dataset file
 * `typedef.jl` : New type defiinition used in the algorithm
 * `mip.jl` : Mixed Integer Programming formulation to solve the problem with Gurobi 
 
-## Benchmarks
-
-## ToDo
-
-- [x] Ryan & Foster branching rule
-- [x] Generic branching rule
-- [x] Root heuristics
-- [x] FIFO and LIFO queuing rule 
-- [x] Set verbose level
-- [ ] Dynamic programming for Ryan & Foster branching rule
-- [ ] Dynamic programming for Generic branching rule
-- [ ] Benchmarks
-- [ ] Heuristics within tree
-- [ ] Diving search strategy
+For more information on the implementation, see the comments direclty on the code or take a look at the **[technical report](tex/report.pdf)**.

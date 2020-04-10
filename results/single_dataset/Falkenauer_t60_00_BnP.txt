@@ -4,34 +4,34 @@ Bin capacity : 1000
 Number of items : 60
 Method : Branch-and-Price
 ****** Settings ******
-Branching rule : ryan_foster
-Subproblem method : gurobi
-Heuristic at root : None
+Branching rule : generic
+Subproblem method : dynamic
+Heuristic at root : FFD
 Heuristic throughout tree : false
 Queueing method : FIFO
 Verbose level : 3
 ****** Result ******
-Running time : -37.0 seconds
-Nodes explored : 4
-Root heursitic objective : Inf
+Running time : 0.001 seconds
+Nodes explored : 1
+Root heursitic objective : 23
 Number of bin used : 20.0
-Bin 1 contains objects : 15 23 42 
-Bin 2 contains objects : 1 56 60 
-Bin 3 contains objects : 3 39 57 
-Bin 4 contains objects : 13 29 40 
-Bin 5 contains objects : 12 33 36 
-Bin 6 contains objects : 5 44 51 
-Bin 7 contains objects : 14 25 55 
-Bin 8 contains objects : 4 47 53 
-Bin 9 contains objects : 24 26 32 
-Bin 10 contains objects : 18 19 49 
-Bin 11 contains objects : 11 28 52 
-Bin 12 contains objects : 16 22 43 
-Bin 13 contains objects : 17 20 46 
-Bin 14 contains objects : 8 37 48 
-Bin 15 contains objects : 21 27 35 
-Bin 16 contains objects : 7 38 45 
-Bin 17 contains objects : 10 30 50 
-Bin 18 contains objects : 6 34 59 
-Bin 19 contains objects : 9 31 54 
-Bin 20 contains objects : 2 41 58 
+Bin 1 contains objects : 25 27 31 
+Bin 2 contains objects : 14 26 55 
+Bin 3 contains objects : 19 20 46 
+Bin 4 contains objects : 7 38 45 
+Bin 5 contains objects : 5 44 51 
+Bin 6 contains objects : 15 23 42 
+Bin 7 contains objects : 3 39 58 
+Bin 8 contains objects : 11 28 52 
+Bin 9 contains objects : 4 48 53 
+Bin 10 contains objects : 17 18 49 
+Bin 11 contains objects : 2 41 59 
+Bin 12 contains objects : 16 21 47 
+Bin 13 contains objects : 13 29 40 
+Bin 14 contains objects : 9 36 43 
+Bin 15 contains objects : 10 30 50 
+Bin 16 contains objects : 1 56 60 
+Bin 17 contains objects : 22 24 35 
+Bin 18 contains objects : 12 32 37 
+Bin 19 contains objects : 8 33 54 
+Bin 20 contains objects : 6 34 57 

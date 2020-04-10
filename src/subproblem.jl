@@ -1,7 +1,7 @@
 include("knapsack.jl")
 
 function solve_subproblem(nodeindex, rule, π)
-    """Redirect to the chosen solving method."""
+    """Redirect to the chosen method."""
 
     if subproblem_method == "gurobi"
         cost, solution =  solve_subproblem_gurobi(nodeindex, rule, π)
@@ -68,7 +68,10 @@ function solve_subproblem_generic_dynamic(nodeindex, rule, π)
     capacity = copy(data.C)
     solution = zeros(data.N)
 
-    # Preprocess the data with the subproblem rule (variables set to 0 and 1)
+    # Preprocess the data with the subproblem rule. Variables set to one are
+    # directly added to the solution, are counted in the cost and the capacity
+    # of the bin is reduced. Variables set to one are not taken into accound
+    # in the knapsack problem.
     index_not_used = []
     preprocess_cost = 0
     for i in rule.setzero
@@ -81,21 +84,22 @@ function solve_subproblem_generic_dynamic(nodeindex, rule, π)
         capacity -= data.S[i]
     end
 
-    # Check if problem is feasible
+    # Check if problem has still a feasible capacity after the preprocessing
     if capacity < 0
         return Inf, []
     end
 
-    # Only keep undetermined variables
+    # Only keep unfixed variables
     knap_profits = π[filter(x -> !(x in index_not_used), eachindex(π))]
     knap_weights = data.S[filter(x -> !(x in index_not_used), eachindex(data.S))]
 
+    # Solve the knapsack problem with the unfixed variables
     knap_cost, knap_solution = solve_knapsack(knap_profits, knap_weights, capacity)
+
+    # Compute the real cost and add knapsack solution to the subproblem solution
     cost = 1 - (knap_cost + preprocess_cost)
     solution[filter(x -> !(x in index_not_used), eachindex(solution))] = knap_solution
-    if size(solution,1) != data.N
-        error("Length")
-    end
+    
     return cost, solution
 
 end

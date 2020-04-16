@@ -1,6 +1,7 @@
 include("master.jl")
 include("subproblem.jl")
 
+
 function process_node(nodeindex)
     """Process a tree node."""
 
@@ -106,16 +107,25 @@ function process_node(nodeindex)
             end
             return calculate_solution(solution, node_pool)
         end
-
         optimize!(master)
-
     end
+end
 
+function calculate_solution(mastersol, node_pool)
+    """Outputs the solution in a proper format."""
+
+    # Pattern selected is the master solution with coefficient in first index
+    x = Array{Array{Float32},1}()
+    for c in 1:size(mastersol,1)
+        if mastersol[c] >= ϵ push!(x, vcat(mastersol[c],node_pool[c][2:data.N+1])) end
+    end
+    return x
 end
 
 
 function calculate_columns_generic(nodeindex)
-    """Calculate columns satisfying current branching rules."""
+    """Calculate columns satisfying current branching rules for the
+    generic branching method."""
 
     # Artificial column is always added to the node pool
     node_pool = Array{Array{Int,1},1}()
@@ -152,6 +162,9 @@ end
 
 
 function calculate_columns_ryan_foster(nodeindex)
+    """Calculate columns satisfying current branching rules for the
+    Ryan and Foster branching method."""
+
     # Keep only columns satisfying current branching constraints
     node_pool = Array{Array{Int,1},1}()
     # Artificial pattern
@@ -177,14 +190,4 @@ function calculate_columns_ryan_foster(nodeindex)
         end
     end
     return node_pool
-end
-
-
-function calculate_solution(mastersol, node_pool)
-    # Pattern selected is the master solution with coefficient in first index
-    x = Array{Array{Float32},1}()
-    for c in 1:size(mastersol,1)
-        if mastersol[c] >= ϵ push!(x, vcat(mastersol[c],node_pool[c][2:data.N+1])) end
-    end
-    return x
 end

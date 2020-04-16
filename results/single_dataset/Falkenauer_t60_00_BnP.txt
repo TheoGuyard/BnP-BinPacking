@@ -7,11 +7,11 @@ Method : Branch-and-Price
 Branching rule : generic
 Subproblem method : dynamic
 Heuristic at root : FFD
-Heuristic throughout tree : false
-Queueing method : FIFO
-Verbose level : 3
+Heuristic throughout tree : IRUP
+Queueing method : Hybrid
+Verbose level : 2
 ****** Result ******
-Running time : 0.001 seconds
+Running time : 0.002 seconds
 Nodes explored : 1
 Root heursitic objective : 23
 Number of bin used : 20.0

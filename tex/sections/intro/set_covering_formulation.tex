@@ -4,7 +4,7 @@ To address the NP-hardness of the problem, we can solve this problem with a Bran
 
 \subsubsection{Set covering formulation}
 
-We choose an other formulation of the \eqref{BPP-classic}. Let $\Pc$ the set of all combination of items in $I$ such that their cumulative size doesn't exceed the bin capacity $C$. Each element of $\Pc$ is called a pattern. Let $P=|\Pc|$, we have
+We choose an other formulation of the \eqref{BPP-classic}. Let $\Pc$ the set of all combination of items of $I$ such that their cumulative size doesn't exceed the bin capacity $C$. Each element of $\Pc$ is called a pattern. Let $P=|\Pc|$, we have
 \begin{equation*}
 	\Pc = \bigg \{ \x \in \{0,1\}^{|N|}, \quad \sum_{i=1}^N x_i s_i \leq C \bigg \} = \bigg \{ \x = \sum_{p=1}^P \alpha^p \bar{x}^p, \quad \sum_{p=1}^P \alpha^p = 1, \alpha \in \{0,1\}^{|P|}  \bigg \}
 \end{equation*}
@@ -22,11 +22,11 @@ Here, $\bar{x}^p$ is a pattern and $\bar{x}^p_i=1$ if the item $i$ is used in th
 \end{equation}
 For this formulation, $x_i^p=1$ if the item $i$ is within the pattern $p$ and $\alpha^p=1$ if the pattern $p$ is used in the solution. Thus, the solution is a set of patterns and each patter correspond to a bin. The constraint ensure that each item is packed in a pattern.
 
-On thing to notice is that $|P|$ (the number of variables) is huge. At most, $|P|$ is the number of combination available with the $N$ items, namely $\sum_{n=1}^P \binom{P}{n}$. Even for small instances, the number of variable is not trackable. Furthermore, it is needed to enumerate and store all the patterns possible in order to solve the problem which could involve a huge amount of memory. 
+On thing to notice is that $|P|$ (the number of variables) is huge. At most, $|P|$ is the number of combination available with $N$ items. Even for small instances, the number of variable is not tractable. Furthermore, it is needed to enumerate and store all the patterns possible in order to solve the problem which could involve a huge amount of memory. 
 
 \subsubsection{Restricted master problem}
 
-To handle this problem, we introduce a new set $\Pc' \subset \Pc$ or cardinal $P'$ containing only a fraction of the available patterns. We can solve \eqref{SCBPP} on this restricted number of pattern, which is more tracktable. This leads to a sub-optimal bound. This new problem is called the restricted master problem :
+To handle this problem, we introduce a new set $\Pc' \subset \Pc$ of cardinal $P'$ containing only a fraction of the available patterns. We can solve \eqref{SCBPP} on this restricted number of pattern, which is more trackable. This leads to a sub-optimal bound. This new problem is called the restricted master problem :
 \begin{equation}
 	\label{RMBPP}
 	\left \{
@@ -39,9 +39,10 @@ To handle this problem, we introduce a new set $\Pc' \subset \Pc$ or cardinal $P
 	\right.
 	\tag{$\Rbb\Mbb\Bbb\Pbb\Pbb$}
 \end{equation}
-If the set $\Pc'$ is well chosen and contained the optimal patterns, then the optimal solution of \eqref{RMBPP} will be the same as the optimal solution of \eqref{SCBPP} (and also the solution of \eqref{BPP-classic}). The problem is to choose the rights patterns to include in $\Pc'$. As $\Pc'$ will also have a big cardinal, we rather solve a relaxation of the master problem and that is why we have that $\alpha_{p} \in [0,1] \ \forall \ p = 1,\dots,P'$. We also add a constraint on the number of pattern allowed as we know that there are only $B$ bins available. If we have some additional informations about the problem, it is possible to tighten this bound. Solving the relaxation will lead to an supra-optimal solution comparing to the integer form of \eqref{RMBPP} (with $ \alpha^{p} \in \{0,1\}$). We will see later how to obtain an integer solution in order to have the same solution as the optimal solution of \eqref{BPP-classic}.
+If the set $\Pc'$ is well chosen and contains the optimal patterns, then the optimal solution of \eqref{RMBPP} will be the same as the optimal solution of \eqref{SCBPP} (and also the solution of \eqref{BPP-classic}). The problem is to choose the right patterns to include in $\Pc'$. As $\Pc'$ will also have a big cardinal, we rather solve a relaxation of the master problem and that is why we have that $\alpha_{p} \in [0,1] \ \forall \ p = 1,\dots,P'$. We also add a constraint on the number of pattern allowed as we know that there are only $B$ bins available. If we have some additional informations about the problem, it is possible to tighten this bound. Solving the relaxation will lead to an supra-optimal solution comparing to the integer form of \eqref{RMBPP} (with $ \alpha^{p} \in \{0,1\}$). We will see later how to obtain an integer solution in order to have the same solution as the optimal solution of \eqref{BPP-classic}.
 
 \subsubsection{Subproblem}
+\label{subproblem}
 
 We can write an other optimization problem called the subproblem (or pricing problem) which will generate "interesting" patterns to include in \eqref{RMBPP}. If we note $\pi$ and $\sigma$ the optimal dual variables corresponding to the first and second constraint of \eqref{RMBPP}, this pricing problem takes the following form :
 \begin{equation}
@@ -62,7 +63,7 @@ On thing very important to notice is that this pricing problem is equivalent to 
 
 \subsubsection{Branching}
 
-Now, let's remember that \eqref{RMBPP} is a relaxation of \eqref{SCBPP} so it gives a supra-optimal solution. In order to have the optimal integer solution, we will introduce branching rules (new constraints) to break the fractional property of the variables. Let's consider a tree where each node correspond to a problem with its local branching rules. When a node is solved to optimality (\ie \eqref{RMBPP} and \eqref{SPBPP} are solved sequentially until optimality), we will select a fractional variables to branch on. Then, child node will be created under the node just solved with new constraints in order to have a non-fractional variable for the rest of the branch. The tree will be explored node after node until all the nodes are explored. The key idea will be to cut non-improving branches during the explorations so as to explore only a part of the tree.
+Now, let's remember that \eqref{RMBPP} is a relaxation of \eqref{SCBPP} so it gives a supra-optimal solution. In order to have the optimal integer solution, we will introduce branching rules (new constraints) to break the fractional property of the variables. Let's consider a tree where each node correspond to a problem with its local branching rules. When a node is solved to optimality (\ie \eqref{RMBPP} is solved sequentially until optimality), we will select fractional variables in the solution to branch on. Then, child nodes will be created under the node just solved with new constraints in order to have a non-fractional variable for the rest of the branch. The tree will be explored node after node until all the nodes are explored. The key idea will be to cut non-improving branches during the explorations so as to explore only a part of the tree.
 
 We can not branch only on the fractional $\alpha^p$. Instead, we will select a pair $(i,j)$ of items such that the variable
 \begin{equation*}

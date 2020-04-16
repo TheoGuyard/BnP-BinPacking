@@ -66,6 +66,4 @@ function process_root_heuristic()
     global UB = size(bins, 1)
     global rootHeuristicObjective = UB
 
-    if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
-
 end

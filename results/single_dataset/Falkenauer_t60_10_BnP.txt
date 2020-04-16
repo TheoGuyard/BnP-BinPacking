@@ -1,0 +1,37 @@
+****** Problem ******
+Instance : Falkenauer_t60_10.txt
+Bin capacity : 1000
+Number of items : 60
+Method : Branch-and-Price
+****** Settings ******
+Branching rule : generic
+Subproblem method : dynamic
+Heuristic at root : FFD
+Heuristic throughout tree : MIRUP
+Queueing method : Hybrid
+Verbose level : 2
+****** Result ******
+Running time : 0.003 seconds
+Nodes explored : 27
+Root heursitic objective : 23
+Number of bin used : 20.0
+Bin 1 contains objects : 1 55 56 
+Bin 2 contains objects : 8 31 57 
+Bin 3 contains objects : 6 36 46 
+Bin 4 contains objects : 12 32 39 
+Bin 5 contains objects : 17 26 40 
+Bin 6 contains objects : 16 23 58 
+Bin 7 contains objects : 19 21 42 
+Bin 8 contains objects : 7 34 47 
+Bin 9 contains objects : 13 27 51 
+Bin 10 contains objects : 5 41 43 
+Bin 11 contains objects : 14 24 60 
+Bin 12 contains objects : 11 29 52 
+Bin 13 contains objects : 4 45 48 
+Bin 14 contains objects : 18 30 33 
+Bin 15 contains objects : 15 25 50 
+Bin 16 contains objects : 20 22 37 
+Bin 17 contains objects : 10 35 38 
+Bin 18 contains objects : 9 28 59 
+Bin 19 contains objects : 2 49 53 
+Bin 20 contains objects : 3 44 54 

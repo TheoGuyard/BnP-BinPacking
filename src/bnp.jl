@@ -1,7 +1,9 @@
+using Printf
 include("typedef.jl")
 include("node.jl")
 include("display.jl")
-include("heuristics.jl")
+include("root_heuristics.jl")
+include("tree_heuristics.jl")
 
 function solve_BnP(maxTime=Inf, benchmark=false)
     """Core structure of the branch-and-price algorithm."""
@@ -23,8 +25,8 @@ function solve_BnP(maxTime=Inf, benchmark=false)
     # problem at least feasible with this column.
     push!(column_pool, vcat(data.B, ones(Int, data.N)))
 
-    global UB = Inf
-    global LB = -Inf
+    global UB = data.B
+    global LB = ceil(sum(data.S)/data.C)
     global bestsol = []
     global rootHeuristicObjective = UB
     global nbNodeExplored = 0
@@ -36,6 +38,7 @@ function solve_BnP(maxTime=Inf, benchmark=false)
     # An heuristic can be run before the branch-and-price to obtain a first UB
     if (root_heuristic != "None")
         process_root_heuristic()
+        if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB | GAP : $(get_gap()) % | Nodes explored : 0\e[00m") end
     end
 
     # Tree initialization with the root
@@ -86,6 +89,10 @@ function solve_BnP(maxTime=Inf, benchmark=false)
 
 end
 
+function get_gap()
+    gap = 100 * (UB - LB) / UB
+    return round(gap, digits=2)
+end
 
 function prune_tree(nodeindex)
     """Remove the current node from the queue and prune nodes that can be
@@ -105,6 +112,8 @@ function branch_or_prune(nodeindex, nodesol)
         (item1, item2) = calculate_branching(nodesol)
         # First subcase, items to branch on are found so new nodes are created
         if (item1, item2) != (0, 0)
+            # Improve the UB with an heuristic
+            process_tree_heuristic(nodesol)
             create_child_nodes(nodeindex, item1, item2)
         # Second subcase, integer solution is found so branch exploration is ended
         else
@@ -126,8 +135,12 @@ function update_bounds()
     last node."""
 
     global LB = minimum([tree[i].lb for i in queue])
-    if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB\e[00m") end
-
+    if (verbose_level > 2) println("\e[37mBounds : LB=$LB, UB=$UB | GAP : $(get_gap()) % | Nodes explored : $nbNodeExplored \e[00m") end
+    if (verbose_level == 2)
+        if nbNodeExplored % 10 == 0
+            println("\e[37mBounds : LB=$LB, UB=$UB | GAP : $(get_gap()) % | Nodes explored : $nbNodeExplored \e[00m")
+        end
+    end
 end
 
 
@@ -262,6 +275,12 @@ function add_child(nodeindex)
         push!(queue, length(tree))
     elseif queueing_method == "FIFO"
         pushfirst!(queue, length(tree))
+    elseif queueing_method == "Hybrid"
+        if UB == data.B
+            push!(queue, length(tree))
+        else
+            pushfirst!(queue, length(tree))
+        end
     end
 
 end
@@ -300,12 +319,13 @@ function check_settings()
         push!(errors, "< root_heuristic > parameter should either be 'FFD', 'BFD' 'WFD', or 'None")
     end
 
-    if !(tree_heuristic in [true, false])
-        push!(errors, "< tree_heuristic > parameter should either be true or fasle")
+    if !(tree_heuristic in ["MIRUP", "BRUSIM", "BRURED", "BOPT", "BRUSUC", "CSTAOPT", "None"])
+        push!(errors, "< tree_heuristic > parameter should either be 'MIRUP', 'BRUSIM',
+        'BRURED', 'BOPT' 'BRUSUC' 'CSTAOPT' or 'None'")
     end
 
-    if !(queueing_method in ["FIFO", "LIFO"])
-        push!(errors, "< queueing_method > parameter should either be 'FIFO' or 'LIFO'")
+    if !(queueing_method in ["FIFO", "LIFO", "Hybrid"])
+        push!(errors, "< queueing_method > parameter should either be 'FIFO', 'LIFO' or 'Hybrid'")
     end
 
     if !(verbose_level in [0, 1, 2, 3])

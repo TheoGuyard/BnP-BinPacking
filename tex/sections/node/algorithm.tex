@@ -1,7 +1,7 @@
 \subsection{Node processing algorithm}
 \label{node-process}
 
-To make things simpler to understand in the implementation, we only use on type of node for both branching method. A node always contains some branching sets but in the case of the Ryan \& Foster method, it has only on branching set with no rule and a coefficient equal to $B$ as we only have one subproblem per node. A node also has a local lower bound and a list of all up and down branching previously made in its branch in order to constructs the new constraints for the Ryan \& Foster method (but also to debug the BnP when needed). In the following, $\pi$ is the dual variable associated to the constraint of \eqref{RMBPP} and $\sigma$ are the constraints associated to each branching subset (only one in the case of Ryan \& Foster method). Whatever the method set to process the node, the algorithm is always the same :
+To make things simpler in the implementation, we only use one type of node for both branching method. A node always contains some branching sets but in the case of the Ryan \& Foster method, it only has one branching set with no rule and a coefficient equal to $B$ as we only have one subproblem per node. A node also has a local lower bound and a list of all up and down branching items previously made in its branch in order to constructs the new constraints for the Ryan \& Foster method (but also to debug the BnP when needed). In the following, $\pi$ is the dual variable associated to the constraint of \eqref{RMBPP} and $\sigma$ are the constraints associated to each branching subset (only one in the case of Ryan \& Foster method). Whatever the method set to process the node, the algorithm is always the same :
 \begin{figure}[!ht]
 	\centering
 	\begin{minipage}[t]{0.7\linewidth}
@@ -10,38 +10,42 @@ To make things simpler to understand in the implementation, we only use on type 
 			\tcp{Initialization}
 			nodePool $\ \leftarrow \ $ \textbf{filterColumnPool}()\;
 			$\pi, \sigma$, solution, value $ \leftarrow$ \textbf{solveMaster}()\;
-			nodelb $\leftarrow \sum \pi_i$, nodeub $\leftarrow value$, minReducedCost $\leftarrow 0$\;
+			nodelb $\leftarrow \sum \pi_i$\; 
+			nodeub $\leftarrow value$\; minReducedCost $\leftarrow 0$\;
 			\tcp{Master problem and subproblems are sequentially solved}
 			\While{true}{
 				\If{solution is integer}{
 					Update global UB if necessary\;	
-					Prune branches with a larger LB than the new UB\;
+					Prune branches with a larger nodelb than UB\;
 					\textbf{break}
 				}
 				\For{s in branching subsets}{
-					\For{r in branching rules of r}{
+					\For{r in branching rules of s}{
 						reducedCost, column $\leftarrow$ \textbf{solveSubproblem}($\pi, \sigma_s$)\;
-						\uIf{reducedCost < $\infty$}{
-							Update minReducedCost\;
+						\If{reducedCost < $\infty$}{
+							minReducedCost = min(minReducedCost ; reducedCost)\;
 							\If{reducedCost < 0}{
 								Add column to the node pool and the column pool\;
 								Update the master problem data with the new column
 							}
-							nodelb = nodelb + reducedCost + $\sigma_s$
-						} \Else {
-							Node is pruned by infeasibility, \textbf{break}
+							nodelb = nodelb + reducedCost
 						}
 					}
+					\If{all columns have reducedCost = $\infty$ for the subset s}{
+						Node is infeasible\;
+						\textbf{break}
+					}
 				}
-				\If{nodelb $\simeq$ nodelb}{
-					Return the solution of the master problem (node is infeasible if it contains the artificial column), \textbf{break}
+				\If{$|nodelb -nodelb| < \epsilon$}{
+					Return the solution of the master problem (node is infeasible if it contains the artificial column)\; \textbf{break}
 				}
 				$\pi, \sigma$, solution, value $ \leftarrow$ \textbf{solveMaster}()\;
 			}
 			
-			\caption{Node process}
+			\caption{Node processing}
 		\end{algorithm}
 	\end{minipage}
 \end{figure}
+\newpage
 
-In practice, a precision error is allowed when testing nodelb $\simeq$ nodeub. for the Ryan \& Foster method, the loop on $s$ and $r$ are only passed once as the node for the Ryan \& Foster method has only one branching set with an empty branching rule.
+For the Ryan \& Foster method, the loop on $s$ and $r$ are only passed once as the node for the Ryan \& Foster method has only one branching set with an empty branching rule. At the beginning of the \textbf{while} loop, if the solution is integer then the node has been solved to optimality. We check is this new feasible solution can improve the current bound an if so, we check is some nodes in the queue can be pruned by bounds. At the end of each \textbf{for} loop on the variable $s$, we check if the node is infeasible. Indeed, if no pattern can be constructed for the subset $s$, then it is impossible to construct a feasible solution as at least one of the pattern needed to construct a solution will be missing.

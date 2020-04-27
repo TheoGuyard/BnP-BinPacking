@@ -1,8 +1,9 @@
 \begin{titlepage}
 	\includegraphics[scale=0.1]{img/logo-insa.png}
-	\vfill
-	\noindent\rule{\textwidth}{1pt}
+	\vspace{3cm}
 	\begin{center}
+		\noindent\rule{\textwidth}{0.5pt} \\
+		\vspace{0.5cm}
 		{\Huge \textbf{Advanced Mathematical Programming}}
 		\vspace{0.1cm} \\
 		{\Large Branch-and-Price for the Bin-Packing Problem}
@@ -14,10 +15,12 @@
 		theo.guyard@insa-rennes.fr
 		\vspace{0.1cm} \\
 		4GM, Mathematics Department, INSA Rennes
-		\vspace{0.5cm} \\
+		\vspace{0.3cm}
+		\noindent\rule{\textwidth}{1pt}
 	\end{center}
-	\noindent\rule{\textwidth}{1pt}
-	\vspace{3cm}
+	\vspace{2cm}
+	\begin{abstract}
+		This technical report presents a Branch-and-Price algorithm aiming to solve the Bin-Packing problem. For this algorithm, two different branching rules and three different exploration methods are implemented. A dynamic programming method able to solve the subproblems instead of using a classical LP solver is presented. Furthermore, some heuristics to be proceeded before and during the tree exploration are provided. In the first section, the main mathematical background of a BnP method suited for the Bin-Packing problem is presented. In the second section, the main structure of the BnP algorithm is presented with some details about the simplest parts. The third section presents the node processing method for the Ryan \& Foster and the Generic branching scheme. Then, the heuristics used before and during the exploration of the tree are presented. Some other method not implemented but which could have improve the algorithm are presented in the fifth section. Finally, some details about the implementation and computational results are given in the last section.
+	\end{abstract}
 	\vfill
-	
 \end{titlepage}

@@ -5,14 +5,14 @@ include("data.jl")
 include("bnp.jl")
 include("mip.jl")
 
-function benchmarks(datasetDirectory, maxItems, maxTime)
+function benchmarks(datasetDirectory, maxItems)
   """Run the BnP on each file contained in the <datasetDirectory> if the dataset has
   less than <maxItems> items in it. The BnP stops if the <maxTime> is reached."""
 
   println("\e[92m************ Benchmarks ***************\e[00m")
 
   global verbose_level = 0
-    
+
   # Benchmarks results are stored in a DataFrame
   benchmarks = DataFrame(
     ID = String[],
@@ -21,17 +21,18 @@ function benchmarks(datasetDirectory, maxItems, maxTime)
     branchingRule = String[],
     subproblemMethod = String[],
     rootHeuristic = String[],
-    treeHeuristic = Bool[],
+    treeHeuristic = String[],
     queueingMethod = String[],
     ϵ = Float32[],
     objectiveValue = Float32[],
+    gap = Float32[],
     rootHeuristicObjective = Float32[],
     nbNodesExplored = Int[],
     runningTime = Float32[]
   )
 
   for dataset in readdir(datasetDirectory)
-    
+
     global data = read_data(joinpath(datasetDirectory, dataset))
 
     if data.N > maxItems
@@ -39,9 +40,9 @@ function benchmarks(datasetDirectory, maxItems, maxTime)
     end
 
     println("\e[36mBenchmark on file : $dataset\e[00m")
-    objectiveValue, rootHeuristicObjective, nbNodeExplored, runningTime = solve_BnP(maxTime, true)
+    objectiveValue, gap, rootHeuristicObjective, nbNodeExplored, runningTime = solve_BnP(true)
 
-    push!(benchmarks, 
+    push!(benchmarks,
       [data.ID,
       data.C,
       data.N,
@@ -51,9 +52,10 @@ function benchmarks(datasetDirectory, maxItems, maxTime)
       tree_heuristic,
       queueing_method,
       ϵ,
-      objectiveValue, 
-      rootHeuristicObjective, 
-      nbNodeExplored, 
+      objectiveValue,
+      gap,
+      rootHeuristicObjective,
+      nbNodeExplored,
       runningTime]
     )
   end

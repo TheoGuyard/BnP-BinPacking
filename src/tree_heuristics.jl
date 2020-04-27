@@ -107,14 +107,14 @@ function brusuc(nodesol)
     end
 
     # While the solution is not integer
-    while any(p -> p[1] - floor(p[1]) > ϵ, nodesol)
+    while any(p -> p[1] - round(p[1]) > ϵ, nodesol)
 
         # Fix the fractional variable closest to one
         max_frac = 0
         max_frac_ind = 0
         for p in 1:size(nodesol,1)
             col_cost = nodesol[p][1]
-            if (col_cost - floor(col_cost) > ϵ) && (col_cost > max_frac)
+            if (col_cost - round(col_cost) > ϵ) && (col_cost > max_frac)
                 max_frac = col_cost
                 max_frac_ind = p
             end

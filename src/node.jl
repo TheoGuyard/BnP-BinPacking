@@ -27,8 +27,6 @@ function process_node(nodeindex)
 
     while true
 
-        node_infeasible = false
-
         # Gather master outputs
         π = JuMP.dual.(packed)
         σ = JuMP.dual.(redundant)
@@ -36,7 +34,7 @@ function process_node(nodeindex)
         solution = JuMP.value.(alpha)
 
         # Check if the solution is integer
-        if maximum(solution - floor.(solution)) <= ϵ
+        if maximum(solution - round.(solution)) <= ϵ
             if (verbose_level >= 3) println("\e[35m Feasible solution with value $value found \e[00m") end
             if value <= UB
                 global UB = value
@@ -58,12 +56,14 @@ function process_node(nodeindex)
         # For the Ryan & Foster rules, there is only one subproblem with one
         # rule so only one subproblem is solved.
         for s in 1:size(tree[nodeindex].subproblemSets,1)
+            node_infeasible = true
             for r in tree[nodeindex].subproblemSets[s].rules
                 # Solve the subproblem and compute the real reduced cost
                 subproblem_obj, column = solve_subproblem(nodeindex, r, π)
                 reduced_cost = subproblem_obj - σ[s]
                 # Check is subproblem is feasible
                 if subproblem_obj < Inf
+                    node_infeasible = false
                     # Update minimum reduced cost
                     if reduced_cost <= min_reduced_cost
                         min_reduced_cost = reduced_cost
@@ -84,12 +84,17 @@ function process_node(nodeindex)
                         if (verbose_level >= 3) println("\e[34m Pattern with items $pattern added \e[00m") end
                     end
                     nodelb += subproblem_obj
+                    if node_infeasible
+                        # Node infeasible if none of the patterns of a subset
+                        # can be made.
+                        return []
+                    end
                 end
             end
         end
 
         # Prune by infeasibility
-        if node_infeasible return [] end
+        #if node_infeasible return [] end
 
         # Update bound
         tree[nodeindex].lb = nodelb

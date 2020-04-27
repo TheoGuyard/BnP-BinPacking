@@ -18,6 +18,7 @@
 \begin{document}
 
 \input{sections/titlepage.tex}
+\newpage
 
 \tableofcontents
 \newpage
@@ -25,10 +26,10 @@
 \section{Introduction}
 \input{sections/intro/problem.tex}
 \input{sections/intro/set_covering_formulation.tex}
-\input{sections/intro/resolution_method.tex}
 \newpage
 
 \section{Branch-and-Price outline}
+\input{sections/bnp/method.tex}
 \input{sections/bnp/outline.tex}
 \newpage
 
@@ -43,9 +44,14 @@
 \input{sections/heuristics/tree.tex}
 \newpage
 
+\section{Additional work not implemented}
+\input{sections/adiitional/rf_dynamic.tex}
+\input{sections/adiitional/diving.tex}
+\newpage
+
 \section{Numerical applications}
+\input{sections/applications/implementation.tex}
 \input{sections/applications/results.tex}
-\input{sections/applications/analysis.tex}
 \newpage
 
 \printbibliography

@@ -1,11 +1,11 @@
-Heuristics are proceeded during the algorithm in order to speed-up the resolution time by finding feasible solutions in order to cut branches faster.
+Heuristics are proceeded during the algorithm in order to speed-up the resolution time by finding feasible solutions so as to cut more branches.
 
 \subsection{Root heuristics}
 \label{heuristic-root}
 
-A first heuristic can be proceeded at root. This is a very important if we want to have a fast algorithm because the higher a branch is cut, the less node will be explored. If a very good bound is found at the root, it can prevent to explore a huge part of the tree.
+A first heuristic can be processed at root. This is a very important if we want to have a fast algorithm because the higher a branch is cut, the less node will be explored. If a very good bound is found at the root, it can prevent to explore a huge part of the tree.
 
-The three heuristics which can be used at root are three variations of a more general heuristic called Decreasing Order Heuristic \cite{johnson1973near}. The key idea is to sort the items is decreasing order and for each item, choose a bin to pack the object. The heuristics differs on the choice of the bin to pack the object. The general Decreasing Order Heuristic can be proceeded as following.
+The three heuristics which can be used at root are three variations of a more general heuristic called \textit{Decreasing Order Heuristic} \cite{johnson1973near}. The key idea is to sort the items is decreasing order and for each item, choose a bin to pack the object. The heuristics differs on the method to choose the bin. The general Decreasing Order Heuristic can be resumed as following.
 
 \begin{figure}[!ht]
 	\centering
@@ -14,7 +14,7 @@ The three heuristics which can be used at root are three variations of a more ge
 			\DontPrintSemicolon 
 			\SetAlgoLined
 			\While{The are items that have not been packed}{
-				Pick the biggest item\;
+				Pick the item with the largest size\;
 				\If{The item can't be packed in any bin}{Add a new bin}
 				Choose a bin able to pack the item\;
 				Put the item in the bin\;
@@ -24,16 +24,16 @@ The three heuristics which can be used at root are three variations of a more ge
 	\end{minipage}
 \end{figure}
 
-The three heuristics implemented are the First-Fit (FFD), the Best-Fit (BFD) and the Worst-Fit (WFD) algorithm and they select the bin to pack the item as following :
+The three heuristics implemented are the \textit{First-Fit} (FFD), the \textit{Best-Fit} (BFD) and the \textit{Worst-Fit} (WFD) algorithm and they select the bin to pack the item as following :
 \begin{itemize}
 	\item \textbf{FFD} :  Chooses the first bin in which the item can be packed
 	\item \textbf{BFD} :  Chooses the bin with the least amount of free space in which the item can be packed
 	\item \textbf{WFD} : Chooses the bin with the most amount of free space in which the item can be packed
 \end{itemize}
-As all these heuristics have to sort the items (in $\Oc( N\log N)$) and to proceed a loop over each of the items (in $\Oc (N)$), their overall complexity is $\Oc (N\log N)$. Furthermore, if $\opt{B}$ is the optimal number of bins, it was shown that the result in the worst case for these heuristics are
+As all these heuristics have to sort the items (complexity in $\Oc( N\log N)$) and to proceed a loop over each of the items (complexity in $\Oc (N)$), their overall complexity is $\Oc (N\log N)$. Furthermore, if $\opt{B}$ is the optimal number of bins, it was shown that the result in the worst case for these heuristics are
 \begin{itemize}
 	\item \textbf{FFD} :  $\floor{1.7 \opt{B}}$ \cite{dosa2013first}
 	\item \textbf{BFD} : $\floor{1.7 \opt{B}}$ \cite{dosa2014optimal}
 	\item \textbf{WFD} : $2\opt{B} - 2$ \cite{johnson1973near}
 \end{itemize}
-We can see that these heuristics are very interesting both regarding to their complexity and their efficiency. It is very recommended to enable it when running the BnP algorithm. There exist many other heuristics which can be found in the  \href{https://en.wikipedia.org/wiki/Bin_packing_problem#Online_Heuristics}{Wikipedia page of the BPP}.
+We can see that these heuristics are very interesting both regarding to their complexity and their efficiency. It is very recommended to enable it when running the BnP algorithm. There exist many other heuristics which can be found at the  \href{https://en.wikipedia.org/wiki/Bin_packing_problem#Online_Heuristics}{Wikipedia page of the BPP}.

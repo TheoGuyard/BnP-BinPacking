@@ -1,4 +1,4 @@
-Now that the core structure of the BnP has been presented, we can focus on the node processing where two methods can be used : the Ryan \& Foster and the generic method.
+Now that the core structure of the BnP has been presented, we can focus on the node processing where two methods can be used : the Ryan \& Foster and the Generic method.
 
 \subsection{Ryan \& Foster method}
 \label{ryan-foster}
@@ -7,12 +7,10 @@ The Ryan \& Foster branching rule will allow to keep a single subproblem per nod
 
 \subsubsection{Branching rules}
 
-When a node is solved to optimality and that two items $i$ and $j$ are found to create a branch, we have to create one child where $w_{ij} \leq 0$ (the down branch) and one child where $w_{ij} \geq 1$ (up branch). For the down branching rule, the Ryan \& Foster branching rule simply add the constraint $x_i + x_j \leq 1$ in the subproblem in order to created pattern with items $i$ and $j$ separated. For the up branching rule, the constraint $x_i = x_j$ will be added to the subproblem in order to create patterns containing $i$ and $j$ and patterns containing neither $i$ nor $j$ (as it is impossible to create a solution only with patterns with $i$ and $j$ in it). The subproblem will handle itself whether to generate patters with (resp. without) $i$ and $j$ because the reduced cost will be too high if too many pattern with (resp. without) $i$ and $j$ have always be created.
+When a node is solved to optimality and that two items $i$ and $j$ are found to create a branch, we have to create one child where $w_{ij} \leq 0$ (the down branch) and one child where $w_{ij} \geq 1$ (up branch). For the down branch, the Ryan \& Foster branching rule simply add the constraint $x_i + x_j \leq 1$ in the subproblem in order to created pattern with items $i$ and $j$ separated. For the up branch, the constraint $x_i = x_j$ is added to the subproblem in order to create patterns containing $i$ and $j$ and patterns containing neither $i$ nor $j$ (as it is impossible to create a solution only with patterns with $i$ and $j$ in it). The subproblem handle itself whether to generate patters with (resp. without) $i$ and $j$ because the reduced cost will be too high if too many pattern with (resp. without) $i$ and $j$ have already been be created.
 
-While exploring the tree, the branching rules will be added sequentially to nodes. Thus, for nodes at the bottom of the tree, the subproblems will have several branching constraints. It is possible that some combination of constraints make the subproblem infeasible. In this case, the process of the node will be stopped and the branch will be cut as it will be impossible to create solutions for the rest of the branch. 
-
-Using such method for the node processing allow to keep a unique subproblem per node and it is simple to create the node pool as we only loop on the global column pool and keep only the columns satisfying the branching rules.
+While exploring the tree, the branching rules will be added sequentially to nodes. Thus, for nodes at the bottom of the tree, the subproblems will have several branching constraints. It is possible that some combination of constraints make the subproblem infeasible. In this case, the process of the node will be stopped and the branch will be cut as it will be impossible to create solutions for the rest of the branch. Using such method for the node processing allow to keep a unique subproblem per node and it is simple to create the node pool as we only loop on the global column pool and keep only the columns satisfying the branching rules.
 
 \subsubsection{Subproblem resolution}
 
-The subproblem will always have to initial structure presented in \ref{subproblem} with the new node branching constraints. Thus, it is possible to solve this problem using a solver like Gurobi. \toDo{Dynamic prog}
+The subproblem will always have to initial structure presented in \ref{subproblem} with the new node branching constraints. Thus, it is possible to solve this problem using a solver like Gurobi. A dynamic programming method can also be used to solve the pricing problem. However, it is very hard to implement. Despite having managed to implement this second method, we present it in \ref{dynamic_rf}. 

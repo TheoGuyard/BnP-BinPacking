@@ -9,7 +9,7 @@ function solve_subproblem(nodeindex, rule, π)
         if branching_rule == "generic"
             cost, solution =  solve_subproblem_generic_dynamic(nodeindex, rule, π)
         elseif branching_rule == "ryan_foster"
-            error("Not implemented yet")
+            error("Dynamic programming for Ryan & Foster method not implemented yet")
         end
     end
 
@@ -99,7 +99,13 @@ function solve_subproblem_generic_dynamic(nodeindex, rule, π)
     # Compute the real cost and add knapsack solution to the subproblem solution
     cost = 1 - (knap_cost + preprocess_cost)
     solution[filter(x -> !(x in index_not_used), eachindex(solution))] = knap_solution
-    
+
     return cost, solution
+
+end
+
+function solve_subproblem_ryan_foster_dynamic(nodeindex, π)
+
+
 
 end

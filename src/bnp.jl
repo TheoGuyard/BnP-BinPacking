@@ -5,7 +5,7 @@ include("display.jl")
 include("root_heuristics.jl")
 include("tree_heuristics.jl")
 
-function solve_BnP(maxTime=Inf, benchmark=false)
+function solve_BnP(benchmark=false)
     """Core structure of the branch-and-price algorithm."""
 
     # If settings are incorrect, the algorithm won't start
@@ -16,7 +16,7 @@ function solve_BnP(maxTime=Inf, benchmark=false)
     if (verbose_level >= 1) println("\e[92m*********** Solve BnP ****************\e[00m") end
     if (verbose_level == 1) println("\e[37mTree is beeing explored ... \e[00m") end
 
-    start = Dates.second(Dates.now())
+    start = Dates.now()
 
     # Each column correspond to a pattern. The first element is the column cost and the other
     # elements indicate if an item is used in the pattern or not.
@@ -49,7 +49,7 @@ function solve_BnP(maxTime=Inf, benchmark=false)
     while length(queue) > 0
 
         # Stop the algorithm is the <maxTime> is reached
-        if (Dates.second(Dates.now())-start)/1000 > maxTime
+        if (Dates.now() - start).value/1000 > maxTime
             println("\e[91mMax time reached !\e[00m")
             break
         end
@@ -76,12 +76,12 @@ function solve_BnP(maxTime=Inf, benchmark=false)
     end
 
     stop = Dates.second(Dates.now())
-    runningTime = min((stop-start)/1000, maxTime)
+    runningTime = (Dates.now() - start).value/1000
 
     # If the BnP is run for a benchmark, the resuts are returned but in a
     # standard case, they are printed to the console
     if benchmark
-        return UB, rootHeuristicObjective, nbNodeExplored, runningTime
+        return UB, get_gap(), rootHeuristicObjective, nbNodeExplored, runningTime
     else
         display_bnp_result(bestsol, runningTime)
         return nothing
@@ -155,7 +155,7 @@ function calculate_branching(nodesol)
                 if costs != []
                     sum_costs = sum(costs)
                     # Check wether the sum of the amount of usage is fractionnal or not
-                    if maximum(sum_costs - floor.(sum_costs)) >= ϵ
+                    if maximum(sum_costs - round.(sum_costs)) >= ϵ
                         return (i, j)
                     end
                 end

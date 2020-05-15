@@ -8,17 +8,17 @@
 
 ---
 
-## ToDo
+## Features
 
 - [x] Ryan & Foster branching rule
 - [x] Generic branching rule
-- [x] Root heuristics
-- [x] FIFO and LIFO queuing rule
-- [x] Set verbose level
-- [ ] Dynamic programming for Ryan & Foster branching rule
+- [x] Root heuristics (FFD, BFD, WFD)
+- [x] Tree heuristics (MIRUP and rounding-strategy based)
+- [x] FIFO, LIFO and Hybrid queuing rule
 - [x] Dynamic programming for Generic branching rule
+- [x] Different verbose level
 - [x] Benchmarks
-- [x] Heuristics within tree
+- [ ] Dynamic programming for Ryan & Foster branching rule
 - [ ] Diving heuristic strategy
 
 ## Usage
@@ -38,6 +38,18 @@
 ```
 5. Set the parameters and run the code in `main.jl`
 
+To run the code in a single dataset, it is possible to use either the `solve_BnP()` mehtod (to use the BnP algorithm) or to use the `solve_MIP()` method (to use only Gurobi). The dataset must be set in the `data` variables with its relative path from the root directory and using the `read_data` method. For example :
+```
+    global data = read_data("data/Falkenauer/Falkenauer_T/Falkenauer_t60_00.txt")
+```
+
+It is also possible to run the code on several datasets to do benchmarks. The directory of the datasets to test is set in the `benchmarksDirectory` variable with its  relative path from the root directory. It is possible to set the maximum number of items wanted in the datasets to test. The benchmark is started with the `benchmark()` method. The following exmaple run a benchmark on the `Scholl_1` directory but only with datasets with at most 100 items :
+```
+    benchmarksDirectory = "data/Scholl/Scholl_1/"
+    maxItems = 100
+    benchmarks(benchmarksDirectory, maxItems)
+```
+
 ## Settings
 
 The following parameters are set in `main.jl`. More details are given in the **[technical report](tex/report.pdf)**.
@@ -51,6 +63,8 @@ The following parameters are set in `main.jl`. More details are given in the **[
 * `ϵ` : Between `10e(-16)` and `10e(-4)`
 * `maxTime` : Maximum solving time allowed in seconds
 
+It is not possible to set both `branching_rule = "ryan_foster"` and `subproblem_method = "dynamic"` as no dynamic programming methods are implements for this branching scheme.
+
 ## Datasets
 
 Bin-Packing datasets come from [BPPLIB](http://or.dei.unibo.it/library/bpplib).
@@ -58,7 +72,7 @@ Bin-Packing datasets come from [BPPLIB](http://or.dei.unibo.it/library/bpplib).
 * [Falkenauer dataset](https://link.springer.com/article/10.1007/BF00226291) : Divided into two classes of 80 instances each : the first class has uniformly distributed item sizes (‘Falkenauer U’) with n between 120 and 1000, and c = 150. The instances of the second class (‘Falkenauer T’) includes the so-called triplets, i.e., groups of three items (one large, two small) that need to be assigned to the same bin in any optimal packing, with n between 60 and 501, and c = 1000.
 * [Scholl dataset](https://www.sciencedirect.com/science/article/abs/pii/S0305054896000822) : Divided into three sets of 720, 480, and 10, respectively, uniformly distributed instances with n between 50 and 500. The capacity c is between 100 and 150 (set ‘Scholl 1’), equal to 1000 (set ‘Scholl 2’), and equal to 100 000 (set ‘Scholl 3’), respectively.
 
-If an other dataset is used, make sure that the file is under the `.bpp` format.
+Two small test datasets are also provided. If an other dataset is used, make sure that the file is under the `.bpp` format.
 
 ## Code file description
 

@@ -1,14 +1,14 @@
 \subsection{Node processing algorithm}
 \label{node-process}
 
-To make things simpler in the implementation, we only use one type of node for both branching method. A node always contains some branching sets but in the case of the Ryan \& Foster method, it only has one branching set with no rule and a coefficient equal to $B$ as we only have one subproblem per node. A node also has a local lower bound and a list of all up and down branching items previously made in its branch in order to constructs the new constraints for the Ryan \& Foster method (but also to debug the BnP when needed). In the following, $\pi$ is the dual variable associated to the constraint of \eqref{RMBPP} and $\sigma$ are the constraints associated to each branching subset (only one in the case of Ryan \& Foster method). Whatever the method set to process the node, the algorithm is always the same :
+To make things simpler in the implementation, we only use one type of node for both branching methods. A node always contains some branching sets but in the case of the Ryan \& Foster method, it only has one branching set with no rules and a coefficient equal to $B$ as we only have one subproblem per node. A node also has a local lower bound and a list of all up and down branching items previously made in its branch in order to constructs the new constraints for the Ryan \& Foster method (but also to debug the BnP when needed). In the following, $\pi$ is the dual variable associated to the constraint of \eqref{RMBPP} and $\sigma$ are the constraints associated to each branching subset (only one $\sigma$ in the case of Ryan \& Foster method). Whatever the method chosen to process the node, the algorithm is always the following :
 \begin{figure}[!ht]
 	\centering
-	\begin{minipage}[t]{0.7\linewidth}
+	\begin{minipage}[t]{0.75\linewidth}
 		\begin{algorithm}[H]
 			\DontPrintSemicolon 
 			\tcp{Initialization}
-			nodePool $\ \leftarrow \ $ \textbf{filterColumnPool}()\;
+			nodePool $\ \leftarrow \ $ \textbf{filterGlobalColumnPool}()\;
 			$\pi, \sigma$, solution, value $ \leftarrow$ \textbf{solveMaster}()\;
 			nodelb $\leftarrow \sum \pi_i$\; 
 			nodeub $\leftarrow value$\; minReducedCost $\leftarrow 0$\;
@@ -19,13 +19,13 @@ To make things simpler in the implementation, we only use one type of node for b
 					Prune branches with a larger nodelb than UB\;
 					\textbf{break}
 				}
-				\For{s in branching subsets}{
+				\For{s in branching sets}{
 					\For{r in branching rules of s}{
 						reducedCost, column $\leftarrow$ \textbf{solveSubproblem}($\pi, \sigma_s$)\;
 						\If{reducedCost < $\infty$}{
 							minReducedCost = min(minReducedCost ; reducedCost)\;
 							\If{reducedCost < 0}{
-								Add column to the node pool and the column pool\;
+								Add column to the node pool and the global column pool\;
 								Update the master problem data with the new column
 							}
 							nodelb = nodelb + reducedCost
@@ -48,4 +48,4 @@ To make things simpler in the implementation, we only use one type of node for b
 \end{figure}
 \newpage
 
-For the Ryan \& Foster method, the loop on $s$ and $r$ are only passed once as the node for the Ryan \& Foster method has only one branching set with an empty branching rule. At the beginning of the \textbf{while} loop, if the solution is integer then the node has been solved to optimality. We check is this new feasible solution can improve the current bound an if so, we check is some nodes in the queue can be pruned by bounds. At the end of each \textbf{for} loop on the variable $s$, we check if the node is infeasible. Indeed, if no pattern can be constructed for the subset $s$, then it is impossible to construct a feasible solution as at least one of the pattern needed to construct a solution will be missing.
+For the Ryan \& Foster method, the loop on $s$ and $r$ are only passed once as the node for the Ryan \& Foster method has only one branching set with an empty branching rule. At the beginning of the \textbf{while} loop, if the solution is integer then the node has been solved to optimality. We check is this new feasible solution can improve the current bound an if so, we check is some nodes in the queue can be pruned by bounds. At the end of each \textbf{for} loop on the variable $s$, we check if the node is infeasible. Indeed, if no pattern can be constructed for the branching set $s$, then it is impossible to construct a feasible solution as patterns of $s$ are missing.

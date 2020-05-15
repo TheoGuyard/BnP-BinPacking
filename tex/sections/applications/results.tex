@@ -1,9 +1,9 @@
 \subsection{Numerical results}
 
-In this section, we test the method for different instances. We also test how each parameter acts on the BnP algorithm and which parameters are better.\\
+In this section, we test the method for different instances. We also test how each parameter acts on the BnP algorithm and which parameters are better.
 
 \subsubsection{Dimension influence}
-The following table shows the BnP result on Falkenauer's datasets with 60 items. $n_{expl}$ is the total number of nodes explored, $\opt{z}$ is the solution found, GAP is the last dual-gap and $t$ is the running time in seconds.
+The following table shows the BnP result on Falkenauer's and Scholl's datasets. The number of items in each tabular is respectively 60 and 120 for Falkenauer's datasets and 50 and 100 for Scholl's datasets. In the tables, $n_{expl}$ is the total number of nodes explored, $\opt{z}$ is the solution found, GAP is the last dual-gap and $t$ is the running time in seconds. A maximum running time have been set to 60 seconds.
 
 \begin{figure}[!ht]
 	\centering
@@ -30,7 +30,7 @@ The following table shows the BnP result on Falkenauer's datasets with 60 items.
 			\texttt{Falkenauer\_t60\_11} & 20.0           & 0\% & 1               & 0.0         \\
 			\texttt{Falkenauer\_t60\_12}& 20.0           & 0\% & 12              & 0.1       \\
 			\texttt{Falkenauer\_t60\_13} & 20.0           & 0\% & 8               & 0.0         \\
-			\texttt{Falkenauer\_t60\_14} & 23.0           & 0\% & 1               & 0.9      \\
+			\texttt{Falkenauer\_t60\_14} & 20.0           & 0\% & 1               & 0.9      \\
 			\texttt{Falkenauer\_t60\_15} & 20.0           & 0\% & 3               & 0.0         \\
 			\texttt{Falkenauer\_t60\_16} & 20.0           & 0\% & 2               & 0.0         \\
 			\texttt{Falkenauer\_t60\_17} & 20.0           & 0\% & 1               & 0.1       \\
@@ -47,37 +47,106 @@ The following table shows the BnP result on Falkenauer's datasets with 60 items.
 			\rowcolor{gray!50}
 			Dataset                       & $\opt{z}$ & GAP  & $n_{expl}$ & $t$ \\
 			\hline
-			\texttt{Falkenauer\_t120\_00} & 42.0           & 4.76 & 284             & 60      \\
-			\texttt{Falkenauer\_t120\_01} & 42.0           & 4.76 & 312             & 60       \\
-			\texttt{Falkenauer\_t120\_02} & 42.0           & 4.76 & 283             & 60      \\
-			\texttt{Falkenauer\_t120\_03} & 42.0           & 4.76 & 289             & 60      \\
-			\texttt{Falkenauer\_t120\_04} & 42.0           & 4.76 & 342             & 60      \\
-			\texttt{Falkenauer\_t120\_05} & 42.0           & 4.76 & 311             & 60      \\
-			\texttt{Falkenauer\_t120\_06} & 42.0           & 4.76 & 330             & 60      \\
-			\texttt{Falkenauer\_t120\_07} & 43.0           & 6.98 & 328             & 60      \\
-			\texttt{Falkenauer\_t120\_08} & 41.0           & 2.44 & 329             & 60      \\
-			\texttt{Falkenauer\_t120\_09} & 42.0           & 4.76 & 387             & 60      \\
-			\texttt{Falkenauer\_t120\_10} & 42.0           & 4.76 & 342             & 60      \\
-			\texttt{Falkenauer\_t120\_11} & 42.0           & 4.76 & 277             & 60      \\
-			\texttt{Falkenauer\_t120\_12} & 42.0           & 4.76 & 371             & 60      \\
-			\texttt{Falkenauer\_t120\_13} & 42.0           & 4.76 & 314             & 60      \\
-			\texttt{Falkenauer\_t120\_14} & 42.0           & 4.76 & 334             & 60      \\
-			\texttt{Falkenauer\_t120\_15} & 42.0           & 4.76 & 354             & 60      \\
-			\texttt{Falkenauer\_t120\_16} & 42.0           & 4.76 & 312             & 60      \\
-			\texttt{Falkenauer\_t120\_17} & 42.0           & 4.76 & 271             & 60      \\
-			\texttt{Falkenauer\_t120\_18} & 42.0           & 4.76 & 344             & 60     \\
-			\texttt{Falkenauer\_t120\_19} & 42.0           & 4.76 & 322             & 60      \\
+			\texttt{Falkenauer\_t120\_00} & 42.0           & 4.76\% & 284             & 60      \\
+			\texttt{Falkenauer\_t120\_01} & 42.0           & 4.76\% & 312             & 60       \\
+			\texttt{Falkenauer\_t120\_02} & 42.0           & 4.76\% & 283             & 60      \\
+			\texttt{Falkenauer\_t120\_03} & 42.0           & 4.76\% & 289             & 60      \\
+			\texttt{Falkenauer\_t120\_04} & 42.0           & 4.76\% & 342             & 60      \\
+			\texttt{Falkenauer\_t120\_05} & 42.0           & 4.76\% & 311             & 60      \\
+			\texttt{Falkenauer\_t120\_06} & 42.0           & 4.76\% & 330             & 60      \\
+			\texttt{Falkenauer\_t120\_07} & 43.0           & 6.98\% & 328             & 60      \\
+			\texttt{Falkenauer\_t120\_08} & 41.0           & 2.44\% & 329             & 60      \\
+			\texttt{Falkenauer\_t120\_09} & 42.0           & 4.76\% & 387             & 60      \\
+			\texttt{Falkenauer\_t120\_10} & 42.0           & 4.76\% & 342             & 60      \\
+			\texttt{Falkenauer\_t120\_11} & 42.0           & 4.76\% & 277             & 60      \\
+			\texttt{Falkenauer\_t120\_12} & 42.0           & 4.76\% & 371             & 60      \\
+			\texttt{Falkenauer\_t120\_13} & 42.0           & 4.76\% & 314             & 60      \\
+			\texttt{Falkenauer\_t120\_14} & 42.0           & 4.76\% & 334             & 60      \\
+			\texttt{Falkenauer\_t120\_15} & 42.0           & 4.76\% & 354             & 60      \\
+			\texttt{Falkenauer\_t120\_16} & 42.0           & 4.76\% & 312             & 60      \\
+			\texttt{Falkenauer\_t120\_17} & 42.0           & 4.76\% & 271             & 60      \\
+			\texttt{Falkenauer\_t120\_18} & 42.0           & 4.76\% & 344             & 60     \\
+			\texttt{Falkenauer\_t120\_19} & 42.0           & 4.76\% & 322             & 60      \\
 			\hline
 		\end{tabular}
 	\end{minipage}
 	}
-	\caption{BnP result on Falkenauer's datasets with 60 and 120 items using the generic branching scheme with dynamic programming, a FFD root-heuristic, a BRUSUC tree-heuristic and Hybrid queueing method and a precision of $10^{-6}$.}
+	\caption{BnP result on Falkenauer's datasets with 60 and 120 items using the generic branching scheme with dynamic programming, a FFD root-heuristic, a BRUSUC tree-heuristic, an Hybrid queueing method and $\epsilon=10^{-6}$.}
 \end{figure}
-\toDo{Anayse}
+\newpage
+\begin{figure}[!ht]
+	\centering
+	\scriptsize{
+	\begin{minipage}{0.47\linewidth}
+		\centering
+		\rowcolors{2}{gray!25}{white}
+		\begin{tabular}{|ccccc|}
+			\hline
+			\rowcolor{gray!50}
+			Dataset                      & $\opt{z}$ & GAP & $n_{expl}$ & $t$ \\
+			\hline
+			\texttt{Scholl\_1/N1C1W1\_A} & 25.0           & 1\% & 356               & 60       \\
+			\texttt{Scholl\_1/N1C1W1\_B} & 31.0           & 1.61\% & 353               & 60    \\
+			\texttt{Scholl\_1/N1C1W1\_C} & 20.0           & 0\% & 7               & 0.271       \\
+			\texttt{Scholl\_1/N1C1W1\_D} & 28.0           & 0\% & 40               & 1.069       \\
+			\texttt{Scholl\_1/N1C1W1\_E} & 26.0           & 0\% & 1               & 0.064       \\
+			\texttt{Scholl\_1/N1C1W1\_F} & 27.0           & 0\% & 47               & 1.085       \\
+			\texttt{Scholl\_1/N1C1W1\_G} & 25.0           & 0\% & 1               & 0.062       \\
+			\texttt{Scholl\_1/N1C1W1\_H} & 31.0           & 0\% & 1               & 0.041       \\
+			\texttt{Scholl\_1/N1C1W1\_I} & 25.0           & 3.71\% & 340               & 60       \\
+			\texttt{Scholl\_1/N1C1W1\_J} & 26.0           & 1.54\% & 385               & 60       \\
+			\texttt{Scholl\_1/N1C1W1\_K} & 26.0           & 2.56\% & 407               & 60       \\
+			\texttt{Scholl\_1/N1C1W1\_L} & 33.0           & 0\% & 58               & 2.558       \\
+			\texttt{Scholl\_1/N1C1W1\_M} & 30.0           & 1.67\% & 437               & 60       \\
+			\texttt{Scholl\_1/N1C1W1\_N} & 26.0           & 4.26\% & 296               & 60       \\
+			\texttt{Scholl\_1/N1C1W1\_O} & 32.0           & 0\% & 1               & 0.072       \\
+			\texttt{Scholl\_1/N1C1W1\_P} & 26.0           & 0\% & 272               & 35.751       \\
+			\texttt{Scholl\_1/N1C1W1\_Q} & 28.0           & 0\% & 1               & 0.08       \\
+			\texttt{Scholl\_1/N1C1W1\_R} & 25.0           & 2.8\% & 299               & 60       \\
+			\texttt{Scholl\_1/N1C1W1\_S} & 28.0           & 0\% & 1               & 0.138       \\
+			\texttt{Scholl\_1/N1C1W1\_T} & 28.0           & 0\% & 1               & 0.087       \\
+			\hline  
+		\end{tabular}
+	\end{minipage}
+	\begin{minipage}{0.47\linewidth}
+		\centering
+		\rowcolors{2}{gray!25}{white}
+		\begin{tabular}{|ccccc|}
+			\hline
+			\rowcolor{gray!50}
+			Dataset   & $z^*$ & GAP  & $n_{expl}$ & $t$ \\
+			\texttt{Scholl\_1/N2C1W1\_A} & 48.0           & 1.39\% & 286             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_B} & 49.0           & 1.02\% & 363             & 60        \\
+			\texttt{Scholl\_1/N2C1W1\_C} & 46.0           & 1.43\% & 344             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_D} & 50.0           & 1.5\%  & 400             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_E} & 58.0           & 0.86\% & 358             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_F} & 50.0           & 1.56\% & 302             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_G} & 60.0           & 1.11\% & 335             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_H} & 52.0           & 1.44\% & 308             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_I} & 62.0           & 0.0\%  & 1               & 0.166       \\
+			\texttt{Scholl\_1/N2C1W1\_J} & 59.0           & 0.0\%  & 1               & 0.197       \\
+			\texttt{Scholl\_1/N2C1W1\_K} & 55.0           & 0.0\%  & 1               & 0.22        \\
+			\texttt{Scholl\_1/N2C1W1\_L} & 55.0           & 0.0\%  & 1               & 0.221       \\
+			\texttt{Scholl\_1/N2C1W1\_M} & 46.0           & 0.68\% & 278             & 60       \\
+			\texttt{Scholl\_1/N2C1W1\_N} & 48.0           & 0.0\%  & 128             & 9.052       \\
+			\texttt{Scholl\_1/N2C1W1\_O} & 48.0           & 1.39\% & 423             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_P} & 54.0           & 0.0\%  & 1               & 0.301       \\
+			\texttt{Scholl\_1/N2C1W1\_Q} & 46.0           & 0.54\% & 280             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_R} & 56.0           & 0.0\%  & 1               & 0.226       \\
+			\texttt{Scholl\_1/N2C1W1\_S} & 45.0           & 0.95\% & 367             & 60      \\
+			\texttt{Scholl\_1/N2C1W1\_T} & 52.0           & 0.82\% & 356             & 60     \\
+			\hline
+		\end{tabular}
+	\end{minipage}
+	}
+	\caption{BnP result on Scholl's datasets with 50 and 100 items using the generic branching scheme with dynamic programming, a FFD root-heuristic, a BRUSUC tree-heuristic, an Hybrid queueing method and $\epsilon=10^{-6}$.}
+\end{figure}
+
+We can see that the Falkenauer's datasets with 60 item are solved in less than a second. For most of them, only one node have been explored. For these datasets, the root heuristic provides a first upper bound at a value near $\overline{z} \simeq 22$. Then, the columns generated at the roots are enough to obtain the optimal solution with the BRUSUC tree heuristic. For the datasets where several nodes are explored, the branches are cut quickly because of the Hybrid queueing method, making the BnP close the instance fast. However, for Falkenauer's datasets with 120 items, none were solved at optimality under a minute. For these datasets, the optimal solution is $z^* = 40$. Even though the optimal solution is not reached, the dual bound met the optimal solution in the very first nodes. The dual bounds created by the column generation are really strong. Though, the primal bound struggles to decrease to its minimal value.  As mentioned in \ref{diving}, a better primal heuristic such as diving heuristics could have improve the algorithm a lot. The primal heuristics used in the algorithm are not strong enough. The same conclusions can be drawn from results of Scholl's datasets. For these last datasets, we can also see the impact of the root heuristics as most of the solved instances only explored the root node before converging.
 
 \subsubsection{Branching rule and subproblem method comparison}
 
-We can also compare the different branching rules and the subproblem resolution method. Two good criteria which can be used are the number of nodes explored and the total running time. $rf$ denotes the Ryan \& Foster branching rule with Gurobi to solve the subproblems, $gg$ and $gd$ denotes respectively the generic branching rule for a subproblem resolution using Gurobi and dynamic programming. 
+We can also compare the different branching rules and the subproblem resolution methods. Two performance criteria are be used : the number of nodes explored and the total running time. In the following table, these two criteria are presented for the Ryan \& Foster branching rule with Gurobi ($rf$), the generic branching rule with Gurobi ($gg$) or with dynamic programming ($gd$). 
 
 \begin{figure}[!ht]
 	\centering
@@ -88,26 +157,27 @@ We can also compare the different branching rules and the subproblem resolution 
 		\rowcolor{gray!50}
 		Dataset & $n_{expl}^{rf}$ & $n_{expl}^{gg}$ & $n_{expl}^{gd}$ & $t^{rf}$ & $t^{gg}$ & $t^{gd}$ \\
 		\hline
-		\texttt{Falkenauer\_t60\_00} & 2 & 2 & 2 & 2.775 & 3.039 & \textbf{1.879} \\
-		\texttt{Falkenauer\_t60\_01} & \textbf{6} & 15 & 15 & 2.588 & 2.943 & \textbf{1.069} \\
-		\texttt{Falkenauer\_t60\_02} & 2 & 2 & 2 & 0.985 & 1.283 & \textbf{0.435} \\
-		\texttt{Falkenauer\_t60\_03} & \textbf{11} & 17 & 17 & 2.121 & 3.465 & \textbf{0.999} \\
-		\texttt{Falkenauer\_t60\_04} & 2 & 2 & 2 & 1.099 & 1.174 & \textbf{0.308} \\
-		\texttt{Falkenauer\_t60\_05} & 1 & 1 & 1 & 1.088 & 1.161 & \textbf{0.305} \\
-		\texttt{Falkenauer\_t60\_06} & 8 & \textbf{6} & \textbf{6} & 1.482 & 1.523 & \textbf{0.340} \\
-		\texttt{Falkenauer\_t60\_07} & 2 & 2 & 2 & 1.020 & 1.212 & \textbf{0.319} \\
-		\texttt{Falkenauer\_t60\_08} & 1 & 1 & 1 & 0.912 & 1.038 & \textbf{0.296} \\
-		\texttt{Falkenauer\_t60\_09} & 1 & 1 & 1 & 1.972 & 1.202 & \textbf{0.303} \\
+		\texttt{Falkenauer\_t60\_00} & 2 & 2 & 2 & 0.2775 & 0.3039 & \textbf{0.1879} \\
+		\texttt{Falkenauer\_t60\_01} & \textbf{6} & 15 & 15 & 0.2588 & 0.2943 & \textbf{0.1069} \\
+		\texttt{Falkenauer\_t60\_02} & 2 & 2 & 2 & 0.0985 & 0.1283 & \textbf{0.0435} \\
+		\texttt{Falkenauer\_t60\_03} & \textbf{11} & 17 & 17 & 0.2121 & 0.3465 & \textbf{0.0999} \\
+		\texttt{Falkenauer\_t60\_04} & 2 & 2 & 2 & 0.1099 & 0.1174 & \textbf{0.0308} \\
+		\texttt{Falkenauer\_t60\_05} & 1 & 1 & 1 & 0.1088 & 0.1161 & \textbf{0.0305} \\
+		\texttt{Falkenauer\_t60\_06} & 8 & \textbf{6} & \textbf{6} & 0.1482 & 0.1523 & \textbf{0.0340} \\
+		\texttt{Falkenauer\_t60\_07} & 2 & 2 & 2 & 0.1020 & 0.1212 & \textbf{0.0319} \\
+		\texttt{Falkenauer\_t60\_08} & 1 & 1 & 1 & 0.0912 & 0.1038 & \textbf{0.0296} \\
+		\texttt{Falkenauer\_t60\_09} & 1 & 1 & 1 & 0.1972 & 0.1202 & \textbf{0.0303} \\
 		\hline  
 	\end{tabular}
-	\caption{Comparison of the branching rule and the subproblem resolution method on the Falkenauer's datasets using FFD root-heuristic, BRUSUC tree-heuristic, Hybrid queueing method and a precision of $10^{-6}$.}
+	\caption{Comparison of the branching rule and the subproblem resolution method on the Falkenauer's datasets using FFD root-heuristic, BRUSUC tree-heuristic, Hybrid queueing method and $\epsilon=10^{-6}$.}
 	}
 \end{figure}
-\toDo{Analyse}
+
+There is no clear difference for the number of nodes explored. No method is better than others. Nevertheless, we can note that in the case of the generic branching method, the resolution with Gurobi or with dynamic programming gives the same number of nodes explored. Even though a knapsack problem can have several optimal solutions, the columns generated with Gurobi and with dynamic programming seems to be similar. Regarding to the running time, there is no clear difference between the two branching methods when using Gurobi to solve the subproblems. However, there is a significant amelioration when dynamic programming is used with the generic branching scheme. The dynamic resolution is faster than Gurobi as a IP solver is suited for general problems whereas the dynamic method is specific for the knapsack problem. As mentioned in \ref{dynamic_rf}, a dynamic programming method for the Ryan \& Foster branching scheme could have improve a lot its running time.
 
 \subsubsection{Root-heuristic comparison}
 
-The following table shows the root-heuristic performance. For each dataset size, we note the number of time each method gave the best result among the three different root-heuristics.
+The following table shows the root-heuristics performance. For each Falkenauer dataset of a given size, we note the relative error of the root heuristic bound $|z^{root} - z^*| / z^*$ where $z^*$ is the optimal value for the dataset and $z^{root}$ is the primal bound provided by the heuristic. The value in the table is the average relative error on all the datasets of a given size.
 
 \begin{figure}[!ht]
 	\centering
@@ -116,18 +186,75 @@ The following table shows the root-heuristic performance. For each dataset size,
 		\begin{tabular}{|ccccc|}
 			\hline
 			\rowcolor{gray!50}
-			Datasets & Number of datasets & FFD & BFD & WFD  \\
+			Datasets & \# datasets & FFD & BFD & WFD  \\
 			\hline
-			\texttt{Falkenauer\_u120\_xx} & 20 & 20 & 20 & 18 \\
-			\texttt{Falkenauer\_u250\_xx} & 20 & 20 & 19 & 11 \\
-			\texttt{Falkenauer\_u500\_xx} & 20 & 20 & 20 & 11 \\
-			\texttt{Scholl\_1} & 540 & 441 & 441 & 540  \\
-			\hline  
+			\texttt{Falkenauer\_u120\_xx} & 20 & 75.6\% & 75.6\% & \textbf{74.6\%} \\
+			\texttt{Falkenauer\_u250\_xx} & 20 & 76.2\% & 76.3\% & \textbf{75.9\%} \\
+			\texttt{Falkenauer\_u500\_xx} & 20 & 77.7\% & 77.7\% & \textbf{77.5\%} \\
+			\texttt{Falkenauer\_u1000\_xx} & 20 & 78.4\% & 78.3\% & \textbf{78.2\%} \\
+			\texttt{Falkenauer\_t60\_xx} & 20 & 84.0\% & 84.0\% & 84.0\% \\
+			\texttt{Falkenauer\_t120\_xx} & 20 & 85.5\% & 85.5\% & 85.5\% \\
+			\texttt{Falkenauer\_t249\_xx} & 20 & 85.5\% & 85.5\% & 85.5\% \\
+			\texttt{Falkenauer\_t501\_xx} & 20 & 86.2\% & 86.2\% & 86.2\% \\
+			\hline
 		\end{tabular}
 		\caption{Comparison of the root-heuristic on the Falkenauer's datasets}
 	}
 \end{figure}
 
-\subsubsection{Tree-heuristic comparison}
+The three heuristics give quite good upper bound to begin the tree exploration. Even if the WFD gives a better result in four cases, the results are not significantly different. These heuristics provides very good first bound regarding to their complexity so it would be unwise not to use it.
 
 \subsubsection{Queuing method comparison}
+
+Finally, we can compare the different queuing methods. We test all the Falkenauer datasets with 60 items for the tree different options. No root/tree heuristics are proceeded as we wan to retrieve only the impact of the queuing method. In the table, we note the number of nodes explored until convergence. If the optimal value is not met under 60 seconds, the algorithm is stopped and theses cases are represented by "-" in the tables.
+
+\begin{figure}[!ht]
+	\centering
+	\small{
+	\begin{minipage}{0.45\linewidth}
+		\centering
+		\rowcolors{2}{gray!25}{white}
+		\begin{tabular}{|cccc|}
+			\hline
+			\rowcolor{gray!50}
+			Dataset & FIFO & LIFO & Hybrid  \\
+			\hline
+			\texttt{Falkenauer\_t60\_00} & 1 & 1 & 1  \\
+			\texttt{Falkenauer\_t60\_01} & 5 & -  & - \\
+			\texttt{Falkenauer\_t60\_02} & 4 & 5 & 5 \\
+			\texttt{Falkenauer\_t60\_03} & 17 & 8 & 8 \\
+			\texttt{Falkenauer\_t60\_04} & 2 & 2 & 2 \\
+			\texttt{Falkenauer\_t60\_05} & 1 & 1 & 1 \\
+			\texttt{Falkenauer\_t60\_06} & 2 & - & - \\
+			\texttt{Falkenauer\_t60\_07} & 1 & 1 & 1 \\
+			\texttt{Falkenauer\_t60\_08} & 2 & 2 & 2 \\
+			\texttt{Falkenauer\_t60\_09} & 1 & 1 & 1 \\
+			\hline
+		\end{tabular}
+	\end{minipage}
+	\begin{minipage}{0.45\linewidth}
+		\centering
+		\rowcolors{2}{gray!25}{white}
+		\begin{tabular}{|cccc|}
+			\hline
+			\rowcolor{gray!50}
+			Dataset & FIFO & LIFO & Hybrid  \\
+			\hline
+			\texttt{Falkenauer\_t60\_10} & 24 & - & - \\
+			\texttt{Falkenauer\_t60\_11} & 1 & 1 & 1 \\
+			\texttt{Falkenauer\_t60\_12} & 18 & 12 & 12 \\
+			\texttt{Falkenauer\_t60\_13} & 8 & - & - \\
+			\texttt{Falkenauer\_t60\_14} & 1 & 1 & 1 \\
+			\texttt{Falkenauer\_t60\_15} & 2 & 12 & 12 \\
+			\texttt{Falkenauer\_t60\_16} & 2 & 2 & 2 \\
+			\texttt{Falkenauer\_t60\_17} & 1 & 1 & 1 \\
+			\texttt{Falkenauer\_t60\_18} & 4 & 4 & 4 \\
+			\texttt{Falkenauer\_t60\_19} & 1 & 1 & 1 \\
+			\hline
+		\end{tabular}
+	\end{minipage}
+	\caption{Comparison of the root-heuristic on the Falkenauer's datasets with no tree/root heuristics and a generic branching method with dynamic programming.}
+	}
+\end{figure}
+
+We can notice that for the FIFO queueing method, all the instances are solved under a minute whereas it is not the case for the two other queueing methods. It seems that the LIFO and Hybrid method struggle to cut branches because no good upper bounds are found. The Hybrid method is first a FIFO and then a LIFO when a first upper bound is found. We can notice that this method is not very efficient and it seems that the first upper bound found is not good and doesn't help after to cut branches. The FIFO method looks like the best method when no heuristics are proceeded.

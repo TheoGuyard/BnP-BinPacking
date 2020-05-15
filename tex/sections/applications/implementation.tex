@@ -1,35 +1,35 @@
 \subsection{Implementation details}
 
-\noindent The code can be found at \href{https://github.com/TheoGuyard/BnP-BinPacking}{https://github.com/TheoGuyard/BnP-BinPacking}. It is also presented in detail how to run the code. In the main directory, the file \texttt{README.md} list most of the things details below. The directory \texttt{results} contains the results under \texttt{.csv} format when running the algorithm on one dataset (\texttt{results/single\_dataset/}) or for a benchmark on a dataset directory (\texttt{results/benchmark/}). The directory \texttt{doc/} contains the papers used during the development of the BnP. The directory \texttt{src/} contains the implementation of the algorithm.\\
+\noindent The code can be found at \href{https://github.com/TheoGuyard/BnP-BinPacking}{https://github.com/TheoGuyard/BnP-BinPacking}. It is presented in detail how to run the code. In the main directory, the file \texttt{README.md} lists most of the things details below. The directory \texttt{results} contains the results under \texttt{.csv} format when running the algorithm on one dataset (\texttt{results/single\_dataset/}) or for a benchmark on a dataset directory (\texttt{results/benchmark/}). The directory \texttt{doc/} contains the papers used during the development of the BnP. The directory \texttt{src/} contains the implementation of the algorithm.\\
 
 \subsubsection{Datasets}
-The subdirectory \texttt{data/} contains the instances used to test the BnP. The two different Bin-Packing type of datasets come from the \href{http://or.dei.unibo.it/library/bpplib}{BPPLIB} :
+The directory \texttt{data/} contains the instances used to test the BnP. The two Bin-Packing type of datasets used come from the \href{http://or.dei.unibo.it/library/bpplib}{BPPLIB} :
 \begin{itemize}
-	\item \href{https://link.springer.com/article/10.1007/BF00226291}{Falkenauer dataset} : Divided into two classes of 80 instances each : the first class has uniformly distributed item sizes (‘Falkenauer U’) with n between 120 and 1000, and c = 150. The instances of the second class (‘Falkenauer T’) includes the so-called triplets, i.e., groups of three items (one large, two small) that need to be assigned to the same bin in any optimal packing, with n between 60 and 501, and c = 1000.
-	\item \href{https://www.sciencedirect.com/science/article/abs/pii/S0305054896000822}{Scholl dataset} : Divided into three sets of 720, 480, and 10, respectively, uniformly distributed instances with n between 50 and 500. The capacity c is between 100 and 150 (set ‘Scholl 1’), equal to 1000 (set ‘Scholl 2’), and equal to 100 000 (set ‘Scholl 3’), respectively.
+	\item \href{https://link.springer.com/article/10.1007/BF00226291}{Falkenauer dataset} : Divided into two classes of 80 instances each : the first class has uniformly distributed item sizes (‘Falkenauer U’) with N between 120 and 1000, and C = 150. The instances of the second class (‘Falkenauer T’) includes the so-called triplets, i.e., groups of three items (one large, two small) that need to be assigned to the same bin in any optimal packing, with N between 60 and 501, and C = 1000. The number of items is noted in the name of the dataset.
+	\item \href{https://www.sciencedirect.com/science/article/abs/pii/S0305054896000822}{Scholl dataset} : Divided into three sets of 720, 480, and 10, respectively, uniformly distributed instances with N between 50 and 500. The capacity C is between 100 and 150 (set ‘Scholl 1’), equal to 1000 (set ‘Scholl 2’), and equal to 100 000 (set ‘Scholl 3’), respectively.
 \end{itemize}
-If an other dataset is used, make sure that the file is under the \texttt{.bpp} format. \\
+If an other dataset is used, make sure that the file is under the \texttt{.bpp} format.
 
 \subsubsection{Code file description}
-File discribed below are in the folder \texttt{src/}.
+File discribed below are under the folder \texttt{src/}.
 \begin{itemize}
-	\item \texttt{main.jl} : Parameter initialization and code entry
+	\item \texttt{main.jl} : Parameter initialization and main code entry
 	\item \texttt{bnp.jl} : Branch-and-Price core structure
 	\item \texttt{master.jl} : Restricted master problem resolution method
 	\item \texttt{node.jl} : Core structure of node processing resolution
 	\item \texttt{subproblem.jl} : Subproblem resolution method
-	\item \texttt{knapsack.jl} : Knapsack problem solving methods
+	\item \texttt{knapsack.jl} : Knapsack problem methods
 	\item \texttt{root\_heurisitcs.jl} : Root heuristic algorithms used before the Branch-and-Price algorithm
 	\item \texttt{tree\_heurisitcs.jl} : Tree heuristic algorithms used within the Branch-and-Price algorithm
-	\item \texttt{benchmarks.jl} : Run benchmarks for a given dataset directory 
-	\item \texttt{display.jl} : Display algorithm results
-	\item \texttt{data.jl} : Read data from dataset file
+	\item \texttt{benchmarks.jl} : Tools to run benchmarks for a given dataset directory 
+	\item \texttt{display.jl} : Tools to display algorithm results
+	\item \texttt{data.jl} : Tools to read data from a dataset file
 	\item \texttt{typedef.jl} : Type definition used in the algorithm
 	\item \texttt{mip.jl} : Mixed Integer Programming formulation to solve the problem with Gurobi
 \end{itemize}
 
 \subsubsection{Running code with \texttt{main.jl}}
-In this file, it is possible to specify the parameters used for the algorithm. It to possible to run the BnP on a single dataset using the function \texttt{solve\_BnP()} or to use Gurobi to solve this instance with the function \texttt{solve\_MIP()}. Finally, it is possible to run the BnP for all the instances located in the specified \texttt{benchmarksDirectory} with less than \texttt{maxItems} in it with a limit on the solving time using \texttt{maxTime} parameter. The parameters allowed are :
+In this file, it is possible to specify the parameters used for the algorithm. It to possible to run the BnP on a single dataset using the function \texttt{solve\_BnP()} or to use Gurobi to solve this instance with the function \texttt{solve\_MIP()}. It is also possible to run the BnP for all the instances located in the specified \texttt{benchmarksDirectory} with less than \texttt{maxItems} in it with a limit on the solving time using \texttt{maxTime} parameter. The parameters allowed are :
 \begin{itemize}
 	\item \texttt{branching\_rule} : \texttt{"ryan\_foster"} or \texttt{"generic"}
 	\item \texttt{subproblem\_method} : \texttt{"gurobi"} or \texttt{"dynamic"}
@@ -40,4 +40,4 @@ In this file, it is possible to specify the parameters used for the algorithm. I
 	\item \texttt{$\epsilon$} : between $10^{-16}$ and $10^{-4}$
 	\item \texttt{maxTime} : Maximum solving time allowed in seconds
 \end{itemize}
-If \texttt{verbose\_level=1}, the BnP doesn't display anything. If \texttt{verbose\_level=2}, only the LB and UB found each 10 nodes are outputted. If \texttt{verbose\_level=3}, all the details of the BnP algorithm are outputted.
+If \texttt{verbose\_level=1}, the BnP doesn't display anything. If \texttt{verbose\_level=2}, only the LB and UB found each 10 nodes are outputted. If \texttt{verbose\_level=3}, all the details of the BnP algorithm are outputted. It is not possible to use both \texttt{branching\_rule="ryan\_foster"} and \texttt{subproblem\_method="dynamic"} as only the dynamic programming algorithm for the generic branching is implemented.

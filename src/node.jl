@@ -93,9 +93,6 @@ function process_node(nodeindex)
             end
         end
 
-        # Prune by infeasibility
-        #if node_infeasible return [] end
-
         # Update bound
         tree[nodeindex].lb = nodelb
 

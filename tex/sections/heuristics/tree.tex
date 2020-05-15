@@ -1,7 +1,7 @@
 \subsection{Tree heuristics}
 \label{heuristic-tree}
 
-Dual bounds found through the tree are proven to be quite good \cite{sadykov2013bin}. Thus, an efficient primal heuristic allowing to get good primal bounds can lead to a very successful algorithm. Two different types of heuristics are implemented. The first type relies on the MIRUP property of the \eqref{BPP-classic} \cite{delorme2016bin}. The second type of heuristics are described in \cite{wascher1996heuristics} and are base on different rounding strategies, starting from the solution of the relaxed restricted master of a node. Despite having managed to implement diving heuristics, we present it in \ref{diving}. 
+Dual bounds found through the tree are proven to be quite good \cite{sadykov2013bin}. Thus, an efficient primal heuristic allowing to get good primal bounds can lead to a very successful algorithm. Two different types of heuristics are implemented. The first type relies on the MIRUP property conjectured for the \eqref{BPP-classic} \cite{delorme2016bin}. The second type of heuristics are described in \cite{wascher1996heuristics} and are based on different rounding strategies, starting from the solution of the relaxed restricted master of a node. Despite having managed to implement diving heuristics, we present it in \ref{diving}. 
 
 \subsubsection{MIRUP-based strategy}
 
@@ -10,23 +10,23 @@ The \textit{MIRUP} property of the \eqref{BPP-classic} is a conjecture which is 
 	\label{mirup}
 	\opt{z} \leq \ceil{\opt{z}_{\Cbb\Rbb}} + 1
 \end{equation}
-where $\opt{z}$ is the solution of \eqref{SCBPP} with the integrity constraint. $\ceil{\opt{z}_{\Cbb\Rbb}} + 1$ is called the MIRUP bound (Mixed Integer Round-Up Property). The idea of this primal heuristic is first to obtain the solution of \eqref{RMBPP} at each node and compute the MIRUP bound. Then, the restricted master problem is solved with integrity constraint and with the new constraint :
+where $\opt{z}$ is the solution of \eqref{SCBPP} with the integrity constraint. $\ceil{\opt{z}_{\Cbb\Rbb}} + 1$ is called the MIRUP bound (Mixed Integer Round-Up Property). The idea of this primal heuristic is first to obtain the solution of \eqref{RMBPP} at each node and compute the MIRUP bound. Then, the restricted master problem is solved a last time with integrity constraint and with the new constraint :
 \begin{equation*}
 	\sum_{p \in \Pc'} \alpha^p \leq \ceil{\opt{z}_{\Cbb\Rbb}} + 1
 \end{equation*}
-If the solution is feasible and outperform the current best solution, then the best solution is updated. Adding this constraint allow to reduce drastically the search space for an integer solution and ensure that UB and LB will have only one unit of difference, leading to a very tight GAP. However, the solving process can still be long as we solve an integer problem instead of a relaxed problem.
+If the solution is feasible and outperform the current best solution, then the best solution is updated. Adding this constraint allows to reduce drastically the search space for an integer solution and ensure that the further UB and LB will have only one unit of difference, leading to a very tight dual GAP. However, the solving process can be long as we solve an integer problem instead of a continuous problem.
 
 
 \subsubsection{Rounding strategies}
 
-In 1995, Wäscher and Gau have presented several rounding strategies grouped in three different categories. This first group is called the \textit{Basic Pattern Approach} and relies directly on the solution of the relaxed master problem. Methods of this group have a name starting with \textbf{B}. The second group is called the \textit{Residual Pattern Approach} and is based on the solution of the relaxed master problem where non-integer components have been rounded-down to zero. As this modification may lead to an infeasible solution, the methods of this groups aims to construct a feasible solution by solving a \textit{Residual Problem} (find new columns to add to the rounded-down solution to create a feasible solution).  Methods of this group have a name starting with \textbf{R}. Finally, the third group is called the \textit{Composite Approach} and is a mix of the two first groups.  Methods of this group have a name starting with \textbf{C}. Several method are proposed in \cite{wascher1996heuristics} and methods \textbf{RSUC} and \textbf{CSTAOPT} are shown to be the most effective. A lot of methods are presented in this paper but only the following methods have been implemented.
+In 1995, Wäscher and Gau \cite{wascher1996heuristics} presented several rounding strategies grouped in three different categories. The first group is called the \textit{Basic Pattern Approach} and relies directly on the solution of the relaxed master problem. Methods of this group have a name starting with \textbf{B}. The second group is called the \textit{Residual Pattern Approach} and is based on the solution of the relaxed master problem where non-integer components have been rounded-down to zero. As this modification may lead to an infeasible solution, methods of this groups aim to construct a feasible solution by solving a \textit{Residual Problem} (find new columns to add to the rounded-down solution to create a feasible solution).  Methods of this group have a name starting with \textbf{R}. Finally, the third group is called the \textit{Composite Approach} and is a mix of the two first groups.  Methods of this group have a name starting with \textbf{C}. Several method are proposed in \cite{wascher1996heuristics} and methods \textbf{RSUC} and \textbf{CSTAOPT} are shown to be the most effective. The following methods have been implemented.
 
 \begin{paragraph}{Procedure BRUSIM}
 	The simplest procedure consists of simultaneously rounding-up any non-integer component of the \eqref{RMBPP} to one. The advantages of this procedure are obvious : it is extremely fast and immediately result in a feasible solution. However, it produces very bad primal bounds.
 \end{paragraph}
 
 \begin{paragraph}{Procedure BRURED}
-	Rounding-up the non-integer components simultaneously often creates an over-packaging of some items. Then it may be feasible to remove some patterns without violating the packaging constraint. Neumann and Morlock \cite{bankhofer2000quantitative} suggest to check whether a pattern can be eliminated without causing a violation of the packaging constraints after having run a BRUSIM procedure.
+	Rounding-up the non-integer components simultaneously often creates an over-packaging of some items. Then it may be possible to remove some patterns without violating the packaging constraint. Neumann and Morlock \cite{bankhofer2000quantitative} suggested to check whether a pattern can be eliminated without causing a violation of the packaging constraints after having run a BRUSIM procedure.
 \end{paragraph}
 
 \begin{paragraph}{Procedure BOPT}
@@ -34,9 +34,9 @@ In 1995, Wäscher and Gau have presented several rounding strategies grouped in 
 \end{paragraph}
 
 \begin{paragraph}{Procedure BRUSUC}
-	Solving directly \eqref{RMBPP} with integrity constraints can be quite costly in time. The BRUSUC address to this problem by first fixing integer variable in the solution of \eqref{RMBPP}. Then, \eqref{RMBPP} is re-optimized (still without integrity constraints) until all the variables are integer. Before each re-optimization, the variable with the higher fractional value is fixed to one.
+	Solving directly \eqref{RMBPP} with integrity constraints can be quite costly in time. The BRUSUC address to this problem by first fixing integer variable in the solution of \eqref{RMBPP}. Then, \eqref{RMBPP} is re-optimized (still without integrity constraints) until all the variables are integer. Before each re-optimization, the variable with the higher fractional value is fixed to one. At most $P'$ re-optimization are made.
 \end{paragraph}
 
 \begin{paragraph}{Procedure CSTAOPT}
-	A \textit{cutting pattern} is a pattern containing an item which is packed more than one. The CSTAOPT procedure starts by finding a feasible solution by applying the BRUSUC procedure. Then, it removes iteratively cutting patterns until there are no cutting pattern left. It will remain a residual problem to be solved as removing cutting pattern can lead to an infeasible solution. The residual pattern is solved by any optimal method.
+	A \textit{cutting pattern} is a pattern containing an item which is packed more than one. The CSTAOPT procedure starts by finding a feasible solution by applying the BRUSUC procedure. Then, it removes iteratively cutting patterns until there are no cutting pattern left. It remains a residual problem to solve as removing cutting patterns can lead to an infeasible solution. The residual pattern is solved by any optimal method.
 \end{paragraph}

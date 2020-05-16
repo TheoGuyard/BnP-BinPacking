@@ -13,10 +13,10 @@
 - [x] Ryan & Foster branching rule
 - [x] Generic branching rule
 - [x] Root heuristics (FFD, BFD, WFD)
-- [x] Tree heuristics (MIRUP and rounding-strategy based)
-- [x] FIFO, LIFO and Hybrid queuing rule
+- [x] Tree heuristics (MIRUP and rounding based)
+- [x] FIFO, LIFO and Hybrid queuing rules
 - [x] Dynamic programming for Generic branching rule
-- [x] Different verbose level
+- [x] Different display levels
 - [x] Benchmarks
 - [ ] Dynamic programming for Ryan & Foster branching rule
 - [ ] Diving heuristic strategy
@@ -27,7 +27,7 @@
 ```
     git clone git://github.com/TheoGuyard/BnP-BinPacking.git
 ```
-2. Open `Julia` or an IDE at project root (directory containing `README.md`)
+2. Open `Julia` or an IDE at **project root** (directory containing `README.md`)
 3. Intall dependencies
 ```
     (@v1.4) pkg> add JuMP, Gurobi, DelimitedFiles, Dates, CSV, DataFrames
@@ -38,12 +38,12 @@
 ```
 5. Set the parameters and run the code in `main.jl`
 
-To run the code in a single dataset, it is possible to use either the `solve_BnP()` mehtod (to use the BnP algorithm) or to use the `solve_MIP()` method (to use only Gurobi). The dataset must be set in the `data` variables with its relative path from the root directory and using the `read_data` method. For example :
+To run the code for a single dataset, it is possible to use either the `solve_BnP()` method (to use the BnP algorithm) or to use the `solve_MIP()` method (to use only Gurobi on the classical BPP formulation). The dataset must be set in the `data` variable with its **relative path** from the root directory and using the `read_data` method. For example :
 ```
     global data = read_data("data/Falkenauer/Falkenauer_T/Falkenauer_t60_00.txt")
 ```
 
-It is also possible to run the code on several datasets to do benchmarks. The directory of the datasets to test is set in the `benchmarksDirectory` variable with its  relative path from the root directory. It is possible to set the maximum number of items wanted in the datasets to test. The benchmark is started with the `benchmark()` method. The following exmaple run a benchmark on the `Scholl_1` directory but only with datasets with at most 100 items :
+It is also possible to run the code on several datasets to benchmark the method. The directory of the datasets to test is set in the `benchmarksDirectory` variable with its  **relative path** from the root directory. It is possible to set the maximum number of items wanted in the datasets to test. The benchmark can be run with the `benchmark()` method. The following example run a benchmark on the `Scholl_1` directory but only with datasets with at most 100 items :
 ```
     benchmarksDirectory = "data/Scholl/Scholl_1/"
     maxItems = 100
@@ -63,7 +63,7 @@ The following parameters are set in `main.jl`. More details are given in the **[
 * `ϵ` : Between `10e(-16)` and `10e(-4)`
 * `maxTime` : Maximum solving time allowed in seconds
 
-It is not possible to set both `branching_rule = "ryan_foster"` and `subproblem_method = "dynamic"` as no dynamic programming methods are implements for this branching scheme.
+It is not possible to set both `branching_rule = "ryan_foster"` and `subproblem_method = "dynamic"` as no dynamic programming methods are implemented for this branching scheme.
 
 ## Datasets
 
@@ -76,7 +76,7 @@ Two small test datasets are also provided. If an other dataset is used, make sur
 
 ## Code file description
 
-File discribed below are in the folder `Bnp-BinPacking/src/`.
+File discribed below are in the folder `src/`.
 
 * `main.jl` : Parameter initialization and code entry
 * `bnp.jl` : Branch-and-Price core structure
@@ -92,4 +92,4 @@ File discribed below are in the folder `Bnp-BinPacking/src/`.
 * `typedef.jl` : Type definition used in the algorithm
 * `mip.jl` : Mixed Integer Programming formulation to solve the problem with Gurobi
 
-For more information on the implementation, see the comments directly on the code or take a look at the **[technical report](tex/report.pdf)**.
+For more information on the implementation, see the comments directly on the code or take a look at the **[technical report](tex/report.pdf)** 😁.

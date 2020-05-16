@@ -62,7 +62,7 @@ function benchmarks(datasetDirectory, maxItems)
 
   # Write the benchmark in a textfile with the datetime as title
   title = Dates.format(now(), "dd:u:yyyy-HH:MM")
-  CSV.write("results/benchmarks/$(title).csv",  benchmarks, writeheader=true)
+  CSV.write("results/benchmarks/$(title).csv", benchmarks, writeheader=true)
 
   return nothing
 

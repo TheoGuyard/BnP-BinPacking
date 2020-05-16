@@ -9,7 +9,7 @@ function process_node(nodeindex)
         println("\e[93m Processing node $nodeindex \e[00m")
         println("\e[96m Up-branch pairs are : $(tree[nodeindex].upBranch)")
         println(" Down-branch pairs are : $(tree[nodeindex].downBranch)")
-        println(" Number of subproblem sets : $(size(tree[nodeindex].subproblemSets,1)) \e[00m")
+        println(" Number of subproblems : $(size(tree[nodeindex].subproblemSets,1)) \e[00m")
     end
 
     global nodestobedeleted = []

@@ -19,13 +19,13 @@ global maxTime = 60
 
 ### Solve a unique problem ###
 
-#global data = read_data("data/Falkenauer/Falkenauer_T/Falkenauer_t60_03.txt")
+global data = read_data("data/Falkenauer/Falkenauer_T/Falkenauer_t60_00.txt")
 
-#solve_BnP()
+solve_BnP()
 #solve_MIP()
 
 ### Benchmark on multiple problems gathered in a directory ###
 
-benchmarksDirectory = "data/Scholl/Scholl_test/"
-maxItems = 101
-benchmarks(benchmarksDirectory, maxItems)
+#benchmarksDirectory = "data/Falkenauer/Falkenauer_T/"
+#maxItems = 101
+#benchmarks(benchmarksDirectory, maxItems)

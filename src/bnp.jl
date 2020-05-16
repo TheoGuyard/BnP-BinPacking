@@ -18,13 +18,15 @@ function solve_BnP(benchmark=false)
 
     start = Dates.now()
 
-    # Each column correspond to a pattern. The first element is the column cost and the other
+    # Each column corresponds to a pattern. The first element is the column cost and the other
     # elements indicate if an item is used in the pattern or not.
     global column_pool = Array{Array{Int,1},1}()
-    # An artificial column with a high cost is added to make every master
-    # problem at least feasible with this column.
+    # An artificial column with a high cost is added to make the master
+    # problem at least feasible using this column.
     push!(column_pool, vcat(data.B, ones(Int, data.N)))
 
+    # Bounds are initialized with the number of items (UB) and a lower bound on the
+    # continuous relaxation of the problem (LB)
     global UB = data.B
     global LB = ceil(sum(data.S)/data.C)
     global bestsol = []
@@ -35,17 +37,17 @@ function solve_BnP(benchmark=false)
     global tree = Vector{Node}()
     global queue = Vector{Int}()
 
-    # An heuristic can be run before the branch-and-price to obtain a first UB
+    # An heuristic can be run before the branch-and-price to obtain a better initial UB
     if (root_heuristic != "None")
         process_root_heuristic()
         if (verbose_level >= 2) println("\e[37mBounds : LB=$LB, UB=$UB | GAP : $(get_gap()) % | Nodes explored : 0\e[00m") end
     end
 
-    # Tree initialization with the root
+    # Tree initialization with the root node
     push!(tree, Node())
     push!(queue, 1)
 
-    # Explore the tree while the are nodes to be explored
+    # Explore the tree while there are nodes to explore
     while length(queue) > 0
 
         # Stop the algorithm is the <maxTime> is reached
@@ -56,7 +58,7 @@ function solve_BnP(benchmark=false)
 
         if (verbose_level >= 3) println("\e[37mQueue : $queue\e[00m") end
 
-        # Pop the last node in the queue and solve it to optimality
+        # Pop the last node in the queue and solve it at optimality
         current = queue[end]
         nodesol = process_node(current)
 
@@ -75,11 +77,10 @@ function solve_BnP(benchmark=false)
         end
     end
 
-    stop = Dates.second(Dates.now())
     runningTime = (Dates.now() - start).value/1000
 
     # If the BnP is run for a benchmark, the resuts are returned but in a
-    # standard case, they are printed to the console
+    # standard case, they are logged
     if benchmark
         return UB, get_gap(), rootHeuristicObjective, nbNodeExplored, runningTime
     else
@@ -107,7 +108,7 @@ end
 function branch_or_prune(nodeindex, nodesol)
     """Decide how to continue the algorithm after the current node processing."""
 
-    # First case, a new branch is possible
+    # First case, a new branch is feasible
     if (size(nodesol, 1) != 0) && (tree[nodeindex].lb <= UB)
         (item1, item2) = calculate_branching(nodesol)
         # First subcase, items to branch on are found so new nodes are created
@@ -154,7 +155,7 @@ function calculate_branching(nodesol)
                 costs = [nodesol[p][1] for p in 1:size(nodesol, 1) if (nodesol[p][i+1]==1 && nodesol[p][j+1]==1)]
                 if costs != []
                     sum_costs = sum(costs)
-                    # Check wether the sum of the amount of usage is fractionnal or not
+                    # Check whether the sum of the amount of usage is fractionnal or not
                     if maximum(sum_costs - round.(sum_costs)) >= ϵ
                         return (i, j)
                     end
@@ -162,10 +163,8 @@ function calculate_branching(nodesol)
             end
         end
     end
-
-    # No items to branch on
+    # No items to branch
     return (0, 0)
-
 end
 
 

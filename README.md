@@ -2,9 +2,12 @@
 
 **Author** : Théo Guyard
 
+**Description** : Work done during my 4th school yeat at INSA Rennes in the Mathematical Departement. The aim is to solve the Bin Packing problem using a Branch and Price algorithm.
+
 **Language** : `Julia 1.4`
 
 **Dependencies** : `JuMP`, `Gurobi`, `DelimitedFiles`, `Dates`, `CSV`, `DataFrames`
+
 
 ---
 

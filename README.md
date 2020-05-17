@@ -47,7 +47,7 @@ To run the code for a single dataset, it is possible to use either the `solve_Bn
     solve_BnP()
 ```
 
-It is also possible to run the code on several datasets to benchmark the method. The directory of the datasets to test is set in the `benchmarksDirectory` variable with its  **relative path** from the root directory. It is possible to set the maximum number of items wanted in the datasets to test. The benchmark can be run with the `benchmark()` method. The following example run a benchmark on the `Scholl_1` directory but only with datasets with at most 100 items :
+It is also possible to run the code on several datasets to benchmark the method. The directory of the datasets to test is set in the `benchmarksDirectory` variable with its  **relative path** from the root directory. It is possible to set the maximum number of items wanted in the datasets to test. The benchmark can be run with the `benchmark()` method. The following example runs a benchmark on the `Scholl_1` directory but only with datasets with at most 100 items :
 ```
     benchmarksDirectory = "data/Scholl/Scholl_1/"
     maxItems = 100
@@ -67,7 +67,7 @@ The following parameters are set in `main.jl`. More details are given in the **[
 * `ϵ` : Between `10e(-16)` and `10e(-4)`
 * `maxTime` : Maximum solving time allowed in seconds
 
-It is not possible to set both `branching_rule = "ryan_foster"` and `subproblem_method = "dynamic"` as no dynamic programming methods are implemented for this branching scheme.
+It is **not possible** to set both `branching_rule = "ryan_foster"` and `subproblem_method = "dynamic"` as no dynamic programming methods are implemented for this branching scheme.
 
 ## Datasets
 
@@ -80,7 +80,7 @@ Two small test datasets are also provided. If an other dataset is used, make sur
 
 ## Code file description
 
-File discribed below are in the folder `src/`.
+Files discribed below are in the folder `src/`.
 
 * `main.jl` : Parameter initialization and code entry
 * `bnp.jl` : Branch-and-Price core structure
@@ -96,4 +96,4 @@ File discribed below are in the folder `src/`.
 * `typedef.jl` : Type definition used in the algorithm
 * `mip.jl` : Mixed Integer Programming formulation to solve the problem with Gurobi
 
-For more information on the implementation, see the comments directly on the code or take a look at the **[technical report](tex/report.pdf)** 😁.
+For more information about the implementation, see the comments directly on the code or take a look at the **[technical report](tex/report.pdf)** 😁.

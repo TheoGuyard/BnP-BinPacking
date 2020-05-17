@@ -44,6 +44,7 @@
 To run the code for a single dataset, it is possible to use either the `solve_BnP()` method (to use the BnP algorithm) or to use the `solve_MIP()` method (to use only Gurobi on the classical BPP formulation). The dataset must be set in the `data` variable with its **relative path** from the root directory and using the `read_data()` method. For example :
 ```
     global data = read_data("data/Falkenauer/Falkenauer_T/Falkenauer_t60_00.txt")
+    solve_BnP()
 ```
 
 It is also possible to run the code on several datasets to benchmark the method. The directory of the datasets to test is set in the `benchmarksDirectory` variable with its  **relative path** from the root directory. It is possible to set the maximum number of items wanted in the datasets to test. The benchmark can be run with the `benchmark()` method. The following example run a benchmark on the `Scholl_1` directory but only with datasets with at most 100 items :

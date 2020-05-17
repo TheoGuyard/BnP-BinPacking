@@ -41,7 +41,7 @@
 ```
 5. Set the parameters and run the code in `main.jl`
 
-To run the code for a single dataset, it is possible to use either the `solve_BnP()` method (to use the BnP algorithm) or to use the `solve_MIP()` method (to use only Gurobi on the classical BPP formulation). The dataset must be set in the `data` variable with its **relative path** from the root directory and using the `read_data` method. For example :
+To run the code for a single dataset, it is possible to use either the `solve_BnP()` method (to use the BnP algorithm) or to use the `solve_MIP()` method (to use only Gurobi on the classical BPP formulation). The dataset must be set in the `data` variable with its **relative path** from the root directory and using the `read_data()` method. For example :
 ```
     global data = read_data("data/Falkenauer/Falkenauer_T/Falkenauer_t60_00.txt")
 ```

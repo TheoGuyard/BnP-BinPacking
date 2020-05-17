@@ -2,7 +2,7 @@
 
 **Author** : Théo Guyard
 
-**Description** : Work done during my 4th school yeat at INSA Rennes in the Mathematical Departement. The aim is to solve the Bin Packing problem using a Branch and Price algorithm.
+**Description** : Work done during my 4th school year at INSA Rennes in the Mathematics Department. The aim was to solve the Bin Packing problem using a Branch and Price algorithm.
 
 **Language** : `Julia 1.4`
 
